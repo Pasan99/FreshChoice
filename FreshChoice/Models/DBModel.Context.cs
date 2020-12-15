@@ -38,5 +38,6 @@ namespace FreshChoice.Models
         public virtual DbSet<Transaction> Transactions { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Wallet> Wallets { get; set; }
+        public virtual DbSet<Image> Images { get; set; }
     }
 }
