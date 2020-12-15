@@ -1,0 +1,159 @@
+﻿@model FreshChoice.ViewModels.Admin.EditItemViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
+}
+<br />
+<div class="row">
+    <div class="col">
+        <h1>@(Model.Item.ItemId == 0 ? "New Item" : "Edit Item")</h1>
+    </div>
+    <div class="col">
+        <button onclick="saveDetails()" class="btn btn-primary float-right" style="padding:10px; font-size:14px;">@(Model.Item.ItemId == 0 ? "Create Item" : "Save Item")</button>
+    </div>
+</div>
+<hr />
+<br />
+<div class="row">
+    @if(Model.Images != null)
+    {
+        foreach (var image in Model.Images)
+        {
+        <div class="col-2">
+            <img style="width:100%; height:150px;" class="rounded" src="@image.ImageUrl"/>
+        </div>
+        }
+    }
+</div>
+<br />
+<form>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="ItemName">Item Name</label>
+            <input type="text" value="@(Model.Item.ItemName)" class="form-control" id="ItemName" placeholder="Ex: Carrot 1KG">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="ItemDescription">Description</label>
+            <input type="text" class="form-control" value="@(Model.Item.ItemDescription)" id="ItemDescription" placeholder="Description">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="ItemAvailableQnt">Available Qnt.</label>
+            <input type="number" class="form-control" value="@(Model.Item.ItemAvailableQnt)" id="ItemAvailableQnt" placeholder="Available Qnt.">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="ItemPrice">Price (LKR)</label>
+            <input type="number" class="form-control" value="@(Model.Item.ItemPrice)" id="ItemPrice" placeholder="Ex : 12,000">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="ItemCategories">Category</label>
+            <select id="ItemCategories" class="form-control" onchange="loadBrands(this.value);">
+                @foreach (var item in Model.Categories)
+                {
+                    if (Model.Item.BrandId != 0 && Model.Brands.Where(w => w.BrandId == Model.Item.BrandId).FirstOrDefault().CategoryId == item.CategoryId)
+                    {
+                        <option selected value="@item.CategoryId">@item.CategoryName</option>
+                    }
+                    else
+                    {
+                        <option value="@item.CategoryId">@item.CategoryName</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="form-group col-md-6">
+            <label for="ItemBrands">Brand</label>
+            <select id="ItemBrands" class="form-control">
+                @if (Model.Categories != null && Model.Categories.Count > 0)
+                {
+                    foreach (var item in Model.Brands
+                        .Where(w =>
+                        (Model.Item.BrandId != 0 && w.CategoryId == (Model.Brands.Where(w2 => Model.Item.BrandId == w2.BrandId).FirstOrDefault().CategoryId) || (w.CategoryId == Model.Categories.First().CategoryId))).ToList())
+                    {
+                        if (Model.Item.BrandId == item.BrandId || Model.Brands.IndexOf(item) == 0)
+                        {
+                            <option selected value="@item.BrandId">@item.BrandName</option>
+                        }
+                        else
+                        {
+                            <option value="@item.BrandId">@item.BrandName</option>
+                        }
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="form-control-file">
+            <label class="form-check-label" for="ItemImages">
+                Add Images
+            </label>
+            <input style="margin-top:8px;" class="form-control-file" multiple type="file" id="ItemImages" accept="image/x-png,image/gif,image/jpeg">
+
+        </div>
+    </div>
+</form>
+<br />
+<br />
+<input hidden id="categoriesList" value="@Model.CategoriesJson" />
+<input hidden id="brandsList" value="@Model.BrandsJson" />
+<input hidden id="ItemId" value="@Model.Item.ItemId" />
+<script>
+    var categories = JSON.parse($("#categoriesList").val());
+    var brands = JSON.parse($("#brandsList").val());
+
+    function saveDetails() {
+        let data = new FormData();
+        console.log($("#ItemImages")[0].files);
+        if ($("#ItemImages")[0].files[0] != null) {
+            var files = $("#ItemImages")[0].files;
+
+            // Add all files to form data
+            for (var i = 0; i < files.length; i++) {
+                data.append(files[i].name, files[i]);
+            }
+        }
+        data.append("ItemId", $("#ItemId").val());
+        data.append("ItemName", $("#ItemName").val());
+        data.append("ItemDescription", $("#ItemDescription").val());
+        data.append("ItemAvailableQnt", $("#ItemAvailableQnt").val());
+        data.append("ItemPrice", $("#ItemPrice").val());
+        data.append("ItemBrandId", $("#ItemBrands").val());
+
+        $.ajax({
+            type: "POST",
+            enctype: 'multipart/form-data',
+            url: "/Admin/SaveItem",
+            data: data,
+            timeout: 600000,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function (data) {
+                if (data != null) {
+                    window.location.href = "/Admin/Items";
+                }
+
+            },
+            error: function (e) {
+                alert("Something went wrong please try again");
+
+            }
+        });
+
+    }
+
+    function loadBrands(catId) {
+        let html = ``;
+        for (let i = 0; i < brands.length; i++) {
+            if (brands[i].CategoryId == catId) {
+                html += `<option value="` + brands[i].BrandId + `">` + brands[i].BrandName + `</option>`;
+            }
+        }
+        $("#ItemBrands").html(html);
+    }
+</script>
+

@@ -18,6 +18,7 @@ namespace FreshChoice.Models
         public Item()
         {
             this.CartItems = new HashSet<CartItem>();
+            this.Images = new HashSet<Image>();
         }
     
         public int ItemId { get; set; }
@@ -27,9 +28,12 @@ namespace FreshChoice.Models
         public int ItemQnt { get; set; }
         public double ItemPrice { get; set; }
         public int BrandId { get; set; }
+        public Nullable<bool> ItemIsDeleted { get; set; }
     
         public virtual Brand Brand { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CartItem> CartItems { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Image> Images { get; set; }
     }
 }

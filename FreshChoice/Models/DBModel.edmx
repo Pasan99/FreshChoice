@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="FreshChoiceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="FreshChoiceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Address">
           <Key>
             <PropertyRef Name="AddressId" />
@@ -56,6 +56,16 @@
           <Property Name="DeliveryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="DeliveryType" Type="varchar" MaxLength="20" Nullable="false" />
         </EntityType>
+        <EntityType Name="Image">
+          <Key>
+            <PropertyRef Name="ImageId" />
+          </Key>
+          <Property Name="ImageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ImageBlob" Type="image" />
+          <Property Name="ImageUrl" Type="varchar" MaxLength="200" Nullable="false" />
+          <Property Name="ImageDescription" Type="varchar" MaxLength="150" Nullable="false" />
+          <Property Name="ItemId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Item">
           <Key>
             <PropertyRef Name="ItemId" />
@@ -67,6 +77,7 @@
           <Property Name="ItemQnt" Type="int" Nullable="false" />
           <Property Name="ItemPrice" Type="float" Nullable="false" />
           <Property Name="BrandId" Type="int" Nullable="false" />
+          <Property Name="ItemIsDeleted" Type="bit" />
         </EntityType>
         <EntityType Name="Order">
           <Key>
@@ -186,6 +197,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Image_Item">
+          <End Role="Item" Type="Self.Item" Multiplicity="1" />
+          <End Role="Image" Type="Self.Image" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="ItemId" />
+            </Principal>
+            <Dependent Role="Image">
+              <PropertyRef Name="ItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Item_Brand">
           <End Role="Brand" Type="Self.Brand" Multiplicity="1" />
           <End Role="Item" Type="Self.Item" Multiplicity="*" />
@@ -277,6 +300,7 @@
           <EntitySet Name="CartItem" EntityType="Self.CartItem" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Delivery" EntityType="Self.Delivery" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Image" EntityType="Self.Image" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Item" EntityType="Self.Item" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Order" EntityType="Self.Order" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OrderStatus" EntityType="Self.OrderStatus" Schema="dbo" store:Type="Tables" />
@@ -303,6 +327,10 @@
           <AssociationSet Name="FK_CartItem_Item" Association="Self.FK_CartItem_Item">
             <End Role="Item" EntitySet="Item" />
             <End Role="CartItem" EntitySet="CartItem" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Image_Item" Association="Self.FK_Image_Item">
+            <End Role="Item" EntitySet="Item" />
+            <End Role="Image" EntitySet="Image" />
           </AssociationSet>
           <AssociationSet Name="FK_Item_Brand" Association="Self.FK_Item_Brand">
             <End Role="Brand" EntitySet="Brand" />
@@ -333,8 +361,7 @@
             <End Role="Wallet" EntitySet="Wallet" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="FreshChoiceModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -412,6 +439,8 @@
           <Property Name="BrandId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Brand" Relationship="Self.FK_Item_Brand" FromRole="Item" ToRole="Brand" />
           <NavigationProperty Name="CartItems" Relationship="Self.FK_CartItem_Item" FromRole="Item" ToRole="CartItem" />
+          <NavigationProperty Name="Images" Relationship="FreshChoiceModel.FK_Image_Item" FromRole="Item" ToRole="Image" />
+          <Property Name="ItemIsDeleted" Type="Boolean" />
         </EntityType>
         <EntityType Name="Order">
           <Key>
@@ -689,7 +718,35 @@
             <End Role="User" EntitySet="Users" />
             <End Role="Wallet" EntitySet="Wallets" />
           </AssociationSet>
+          <EntitySet Name="Images" EntityType="FreshChoiceModel.Image" />
+          <AssociationSet Name="FK_Image_Item" Association="FreshChoiceModel.FK_Image_Item">
+            <End Role="Item" EntitySet="Items" />
+            <End Role="Image" EntitySet="Images" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Image">
+          <Key>
+            <PropertyRef Name="ImageId" />
+          </Key>
+          <Property Name="ImageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ImageBlob" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="ImageUrl" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ImageDescription" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="ItemId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Item" Relationship="FreshChoiceModel.FK_Image_Item" FromRole="Image" ToRole="Item" />
+        </EntityType>
+        <Association Name="FK_Image_Item">
+          <End Type="FreshChoiceModel.Item" Role="Item" Multiplicity="1" />
+          <End Type="FreshChoiceModel.Image" Role="Image" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Item">
+              <PropertyRef Name="ItemId" />
+            </Principal>
+            <Dependent Role="Image">
+              <PropertyRef Name="ItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -756,6 +813,7 @@
           <EntitySetMapping Name="Items">
             <EntityTypeMapping TypeName="FreshChoiceModel.Item">
               <MappingFragment StoreEntitySet="Item">
+                <ScalarProperty Name="ItemIsDeleted" ColumnName="ItemIsDeleted" />
                 <ScalarProperty Name="ItemId" ColumnName="ItemId" />
                 <ScalarProperty Name="ItemName" ColumnName="ItemName" />
                 <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
@@ -827,6 +885,17 @@
                 <ScalarProperty Name="WalletDescription" ColumnName="WalletDescription" />
                 <ScalarProperty Name="WalletTotal" ColumnName="WalletTotal" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Images">
+            <EntityTypeMapping TypeName="FreshChoiceModel.Image">
+              <MappingFragment StoreEntitySet="Image">
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+                <ScalarProperty Name="ImageDescription" ColumnName="ImageDescription" />
+                <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
+                <ScalarProperty Name="ImageBlob" ColumnName="ImageBlob" />
+                <ScalarProperty Name="ImageId" ColumnName="ImageId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

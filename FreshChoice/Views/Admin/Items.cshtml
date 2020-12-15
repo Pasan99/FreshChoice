@@ -1,0 +1,77 @@
+﻿@model IEnumerable<FreshChoice.Models.Item>
+@{
+    ViewBag.Title = "Index";
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+<div class="row">
+    <div class="col-lg-6 my-auto">
+        <h1>Items</h1>
+    </div>
+    <div class="col-lg-6 my-auto">
+        <a href="/Admin/EditItem" class="btn btn-primary float-right">New Item</a>
+        <a style="margin-right: 10px;" href="/Admin/ManageCategories" class="btn btn-outline-primary float-right">Manage Categories & Brands</a>
+
+    </div>
+</div>
+
+<hr />
+<table id="items_table" class="table display">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Available Qnt.</th>
+            <th>Price</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td width="5%">@item.ItemId</td>
+            <td>@item.ItemName</td>
+            <td width="5%">@item.ItemAvailableQnt</td>
+            <td>LKR @item.ItemPrice</td>
+            <td>
+                <a href="/Admin/EditItem/@item.ItemId" class="btn btn-primary">Edit</a>
+                <button onclick="deleteItem('@item.ItemId')" class="btn btn-danger">Delete</button>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+<br />
+<br />
+
+<script>
+    $(document).ready(function () {
+        $('#items_table').DataTable();
+    });
+
+    function deleteItem(id) {
+        var r = confirm("Are you sure you want to delete this Item?");
+        if (r == true) {
+            $.ajax({
+                type: "POST",
+                url: "/Admin/DeleteItem?Id=" + id,
+                timeout: 600000,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (data) {
+                    if (data != null && data != false) {
+                        window.location.href = "/Admin/Items";
+                    }
+                },
+                error: function (e) {
+                    alert("Something went wrong please try again");
+
+                }
+            });
+        }
+    }
+</script>
