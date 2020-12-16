@@ -55,6 +55,7 @@
           </Key>
           <Property Name="DeliveryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="DeliveryType" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="UserId" Type="int" />
         </EntityType>
         <EntityType Name="Image">
           <Key>
@@ -89,9 +90,10 @@
           <Property Name="OrderConfirmationNo" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="OrderUpdatedDate" Type="datetime" Nullable="false" />
           <Property Name="OrderNextDeadline" Type="datetime" Nullable="false" />
-          <Property Name="DeliveryId" Type="int" Nullable="false" />
+          <Property Name="DeliveryId" Type="int" />
           <Property Name="OrderStatusId" Type="int" Nullable="false" />
           <Property Name="CartId" Type="int" Nullable="false" />
+          <Property Name="OrderAmount" Type="float" Nullable="false" />
         </EntityType>
         <EntityType Name="OrderStatus">
           <Key>
@@ -127,6 +129,7 @@
           <Property Name="UserEmail" Type="varchar" MaxLength="150" Nullable="false" />
           <Property Name="UserContact" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="RoleId" Type="int" Nullable="false" />
+          <Property Name="UserPassword" Type="varchar" MaxLength="300" Nullable="false" />
         </EntityType>
         <EntityType Name="Wallet">
           <Key>
@@ -194,6 +197,18 @@
             </Principal>
             <Dependent Role="CartItem">
               <PropertyRef Name="ItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Delivery_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Delivery" Type="Self.Delivery" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Delivery">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -328,6 +343,10 @@
             <End Role="Item" EntitySet="Item" />
             <End Role="CartItem" EntitySet="CartItem" />
           </AssociationSet>
+          <AssociationSet Name="FK_Delivery_User" Association="Self.FK_Delivery_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Delivery" EntitySet="Delivery" />
+          </AssociationSet>
           <AssociationSet Name="FK_Image_Item" Association="Self.FK_Image_Item">
             <End Role="Item" EntitySet="Item" />
             <End Role="Image" EntitySet="Image" />
@@ -425,6 +444,8 @@
           </Key>
           <Property Name="DeliveryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="DeliveryType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="UserId" Type="Int32" />
+          <NavigationProperty Name="User" Relationship="FreshChoiceModel.FK_Delivery_User" FromRole="Delivery" ToRole="User" />
         </EntityType>
         <EntityType Name="Item">
           <Key>
@@ -452,12 +473,13 @@
           <Property Name="OrderConfirmationNo" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="OrderUpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="OrderNextDeadline" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="DeliveryId" Type="Int32" Nullable="false" />
+          <Property Name="DeliveryId" Type="Int32" />
           <Property Name="OrderStatusId" Type="Int32" Nullable="false" />
           <Property Name="CartId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Cart" Relationship="Self.FK_Order_Cart" FromRole="Order" ToRole="Cart" />
           <NavigationProperty Name="Cart1" Relationship="Self.FK_Order_Delivery" FromRole="Order" ToRole="Cart" />
           <NavigationProperty Name="OrderStatu" Relationship="Self.FK_Order_OrderStatus" FromRole="Order" ToRole="OrderStatus" />
+          <Property Name="OrderAmount" Type="Double" Nullable="false" />
         </EntityType>
         <EntityType Name="OrderStatu">
           <Key>
@@ -500,6 +522,8 @@
           <NavigationProperty Name="Carts" Relationship="Self.FK_Cart_User" FromRole="User" ToRole="Cart" />
           <NavigationProperty Name="Role" Relationship="Self.FK_User_Role" FromRole="User" ToRole="Role" />
           <NavigationProperty Name="Wallets" Relationship="Self.FK_Wallet_User" FromRole="User" ToRole="Wallet" />
+          <Property Name="UserPassword" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Deliveries" Relationship="FreshChoiceModel.FK_Delivery_User" FromRole="User" ToRole="Delivery" />
         </EntityType>
         <EntityType Name="Wallet">
           <Key>
@@ -723,6 +747,10 @@
             <End Role="Item" EntitySet="Items" />
             <End Role="Image" EntitySet="Images" />
           </AssociationSet>
+          <AssociationSet Name="FK_Delivery_User" Association="FreshChoiceModel.FK_Delivery_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Delivery" EntitySet="Deliveries" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Image">
           <Key>
@@ -744,6 +772,18 @@
             </Principal>
             <Dependent Role="Image">
               <PropertyRef Name="ItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Delivery_User">
+          <End Type="FreshChoiceModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="FreshChoiceModel.Delivery" Role="Delivery" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Delivery">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -805,6 +845,7 @@
           <EntitySetMapping Name="Deliveries">
             <EntityTypeMapping TypeName="FreshChoiceModel.Delivery">
               <MappingFragment StoreEntitySet="Delivery">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="DeliveryId" ColumnName="DeliveryId" />
                 <ScalarProperty Name="DeliveryType" ColumnName="DeliveryType" />
               </MappingFragment>
@@ -827,6 +868,7 @@
           <EntitySetMapping Name="Orders">
             <EntityTypeMapping TypeName="FreshChoiceModel.Order">
               <MappingFragment StoreEntitySet="Order">
+                <ScalarProperty Name="OrderAmount" ColumnName="OrderAmount" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="OrderDescription" ColumnName="OrderDescription" />
                 <ScalarProperty Name="OrderBillNo" ColumnName="OrderBillNo" />
@@ -870,6 +912,7 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="FreshChoiceModel.User">
               <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="UserPassword" ColumnName="UserPassword" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
                 <ScalarProperty Name="UserEmail" ColumnName="UserEmail" />

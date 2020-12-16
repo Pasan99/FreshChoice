@@ -1,0 +1,221 @@
+﻿@model IEnumerable<FreshChoice.ViewModels.Admin.AllOrderItem>
+@{
+    ViewBag.Title = "Index";
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+<div class="row">
+    <div class="col-lg-6 my-auto">
+        <h1>Sales (Sales Assistant)</h1>
+    </div>
+    <div class="col-lg-6 my-auto">
+
+    </div>
+</div>
+
+<hr />
+<table id="orders_table" class="table display">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Bill No.</th>
+            <th>Confirmation No.</th>
+            <th>Last Update</th>
+            <th>Next Deadline</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Details</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td width="5%">@item.OrderId</td>
+                <td>@item.BillNo</td>
+                <td width="5%">@item.ConfirmationNo</td>
+                <td>@item.LastUpdate</td>
+                <td>@item.NextDeadline</td>
+                <td>LKR @item.OrderAmount</td>
+                <td>@item.OrderStatus</td>
+                <td>
+                    <button onclick="filterItems('@item.OrderId')" type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#exampleModal">View</button>
+                </td>
+                <td>
+                    <button onclick="selectOrder('@item.OrderId')" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal2">Change Status</button>
+                    <button onclick="cancelOrder('@item.OrderId')" type="button" class="btn btn-danger">Cancel Order</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
+<br />
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Order Items</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <table id="items_table" class="table table-bordered table-striped" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Order Id</th>
+                            <th>Id</th>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Qnt.</th>
+                            <th>Item Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model)
+                        {
+                            foreach (var item in order.Items)
+                            {
+                                <tr>
+                                    <td width="4%">@order.OrderId</td>
+                                    <td><img src="@item.ItemImageUrl" class="rounded" style="width:50px; height:50px;" /></td>
+                                    <td>@item.ItemId</td>
+                                    <td>@item.ItemName</td>
+                                    <td>@item.Quantity</td>
+                                    <td>@item.ItemPrice</td>
+                                </tr>
+                            }
+
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Update Status</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="orderStatus">Status</label>
+                    <select class="form-control form-control-lg" id="orderStatus">
+                        <option selected value="@(FreshChoice.Models.OrderProcessingStatus.ONSALES)">ON SALES</option>
+                        <option value="@(FreshChoice.Models.OrderProcessingStatus.READY)">READY</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="nextDeadline">Next Deadline</label>
+                    <input type="datetime-local" class="form-control" id="nextDeadline" placeholder="Ex : 2020/12/20">
+                </div>
+                <hr />
+                <button onclick="updateStatus()" type="button" class="btn btn-primary btn-lg float-right">Update</button>
+                <br />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var itemsTable;
+    var selectedOrderId;
+    $(document).ready(function () {
+        $('#orders_table').DataTable();
+        itemsTable = $("#items_table").DataTable({
+            paging: false,
+            "pageLength": 10,
+            "order": [[1, "asc"]],
+            "columnDefs": [
+                {
+                    "targets": [0],
+                    "visible": false,
+                    "searchable": true
+                }
+            ],
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+        });
+    });
+
+    function filterItems(id) {
+        itemsTableteam 
+            .column(0)
+            .search(id, true, false)
+            .draw();
+    }
+
+    function selectOrder(id) {
+        selectedOrderId = id;
+    }
+
+    function updateStatus() {
+        var statusOrder = $("#orderStatus").val();
+        $("#nextDeadline").find("input").val();
+        var date = $("#nextDeadline").val();
+        if (date == null || date == "") {
+            alert("Date cannot be empty");
+            return;
+        }
+        var id = selectedOrderId;
+        $.ajax({
+            type: "POST",
+            url: "/Admin/UpdateOrderStatus?Id=" + id + "&StatusOrder=" + statusOrder + "&NextDeadline=" + date,
+            timeout: 600000,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function (data) {
+                if (data != null && data != false) {
+                    window.location.href = "/Admin/Sales";
+                }
+            },
+            error: function (e) {
+                alert("Something went wrong please try again");
+
+            }
+        });
+    }
+
+    function cancelOrder(id) {
+        var r = confirm("Are you sure you want to cancel this order?");
+        if (r == true) {
+            $.ajax({
+                type: "POST",
+                url: "/Admin/CancelOrder?Id=" + id,
+                timeout: 600000,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (data) {
+                    if (data != null && data != false) {
+                        window.location.href = "/Admin/Sales";
+                    }
+                },
+                error: function (e) {
+                    alert("Something went wrong please try again");
+
+                }
+            });
+        }
+    }
+
+    function convertToJavaScriptDate(value) {
+        var pattern = /Date\(([^)]+)\)/;
+        var results = pattern.exec(value);
+        var dt = new Date(parseFloat(results[1]));
+        return (dt.getMonth() + 1) + "/" + dt.getDate() + "/" + dt.getFullYear();
+    }
+</script>
