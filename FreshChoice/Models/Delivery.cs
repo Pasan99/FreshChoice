@@ -17,6 +17,7 @@ namespace FreshChoice.Models
         public int DeliveryId { get; set; }
         public string DeliveryType { get; set; }
         public Nullable<int> UserId { get; set; }
+        public Nullable<double> DeliveryFee { get; set; }
     
         public virtual User User { get; set; }
     }

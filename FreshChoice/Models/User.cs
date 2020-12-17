@@ -21,6 +21,7 @@ namespace FreshChoice.Models
             this.Carts = new HashSet<Cart>();
             this.Wallets = new HashSet<Wallet>();
             this.Deliveries = new HashSet<Delivery>();
+            this.Orders = new HashSet<Order>();
         }
     
         public int UserId { get; set; }
@@ -39,5 +40,7 @@ namespace FreshChoice.Models
         public virtual ICollection<Wallet> Wallets { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Delivery> Deliveries { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

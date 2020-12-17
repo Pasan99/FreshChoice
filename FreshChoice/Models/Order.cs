@@ -24,9 +24,11 @@ namespace FreshChoice.Models
         public int OrderStatusId { get; set; }
         public int CartId { get; set; }
         public double OrderAmount { get; set; }
+        public int UserId { get; set; }
     
         public virtual Cart Cart { get; set; }
         public virtual Cart Cart1 { get; set; }
         public virtual OrderStatu OrderStatu { get; set; }
+        public virtual User User { get; set; }
     }
 }
