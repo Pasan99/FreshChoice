@@ -155,6 +155,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -225,6 +226,7 @@
     <Compile Include="ViewModels\Admin\AllOrderItem.cs" />
     <Compile Include="ViewModels\Admin\EditItemViewModel.cs" />
     <Compile Include="ViewModels\Admin\ManageCategoriesViewModel.cs" />
+    <Compile Include="ViewModels\Cart\MainCartViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -305,6 +307,7 @@
     <Content Include="Views\Admin\Sales.cshtml" />
     <Content Include="Views\Admin\Delivery.cshtml" />
     <Content Include="Views\Admin\Counter.cshtml" />
+    <Content Include="Views\Cart\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -14,7 +14,7 @@ namespace FreshChoice.ViewModels.Admin
         public DateTime LastUpdate { get; set; }
         public DateTime NextDeadline { get; set; }
         public string OrderStatus { get; set; }
-        public Cart Cart { get; set; }
+        public Models.Cart Cart { get; set; }
         public double OrderAmount { get; set; }
         public List<OrderCartItem> Items { get; set; }
         //public AllOrderItem(int OrderId, string BillNo, string ConfirmationNo, DateTime LastUpdate, DateTime NextDeadline, string OrderStatus, Cart Cart, double OrderAmount)
@@ -37,6 +37,7 @@ namespace FreshChoice.ViewModels.Admin
         public string ItemName { get; set; }
         public double ItemPrice { get; set; }
         public string ItemImageUrl { get; set; }
+        public string ItemDescription { get; set; }
         //public OrderCartItem(int ItemId, int Quantity, string ItemName, double ItemPrice, string ItemImageUrl)
         //{
         //    this.ItemId = ItemId;

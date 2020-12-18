@@ -65,6 +65,7 @@ namespace FreshChoice.Utilities
                         orderCartItem.Quantity = item.CartItemQnt;
                         orderCartItem.ItemName = selectedItem.ItemName;
                         orderCartItem.ItemPrice = selectedItem.ItemPrice;
+                        orderCartItem.ItemDescription = selectedItem.ItemDescription;
                         if (selectedItemImage != null)
                         {
                             orderCartItem.ItemImageUrl = selectedItemImage.ImageUrl;
@@ -286,6 +287,39 @@ namespace FreshChoice.Utilities
 
             }
             
+        }
+        public double GetDeliveryFees()
+        {
+            double deliveryFee = 0;
+            using (FreshChoiceEntities db = new FreshChoiceEntities())
+            {
+                Address address = db.Addresses.Where(w => w.UserId == currentUserId).FirstOrDefault();
+                if (address != null)
+                {
+                    var userCoordinate = new GeoCoordinate(address.AddressLatitude, address.AddressLongitude);
+                    var shopCoordinate = new GeoCoordinate(StoreLocation.STORE_LATITUDE, StoreLocation.STORE_LONGITUDE);
+
+                    var distanceInKM = userCoordinate.GetDistanceTo(shopCoordinate) / 1000;
+                    deliveryFee = distanceInKM * 50;
+                }
+            }
+            return deliveryFee;
+        }
+        public double GetDeliveryInKilometers()
+        {
+            double distance = 0;
+            using (FreshChoiceEntities db = new FreshChoiceEntities())
+            {
+                Address address = db.Addresses.Where(w => w.UserId == currentUserId).FirstOrDefault();
+                if (address != null)
+                {
+                    var userCoordinate = new GeoCoordinate(address.AddressLatitude, address.AddressLongitude);
+                    var shopCoordinate = new GeoCoordinate(StoreLocation.STORE_LATITUDE, StoreLocation.STORE_LONGITUDE);
+
+                    distance = userCoordinate.GetDistanceTo(shopCoordinate) / 1000;
+                }
+            }
+            return distance;
         }
         public List<AllOrderItem> GetAllOrderItems()
         {
