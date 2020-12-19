@@ -32,6 +32,8 @@
         <AssociationConnector Association="FreshChoiceModel.FK_Wallet_User" ManuallyRouted="false" />
         <EntityTypeShape EntityType="FreshChoiceModel.Image" Width="1.5" PointX="7.5" PointY="1.125" />
         <AssociationConnector Association="FreshChoiceModel.FK_Image_Item" />
+        <AssociationConnector Association="FreshChoiceModel.FK_Delivery_User" />
+        <AssociationConnector Association="FreshChoiceModel.FK_Order_User" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

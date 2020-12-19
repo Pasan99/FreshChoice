@@ -233,5 +233,325 @@ namespace FreshChoice.Controllers
             }
             return Json(result);
         }
+
+        ///////////////////////////////////////////////
+        public ActionResult Orders()
+        {
+            List<AllOrderItem> orders = new List<AllOrderItem>();
+            using(FreshChoiceEntities db = new FreshChoiceEntities())
+            {
+                var newOrders = db.Orders
+                    .Join(
+                        db.OrderStatus,
+                        o => o.OrderStatusId,
+                        os => os.OrderStatusId,
+                        (o, os) => new {order = o, orderStatus = os}
+                    )
+                    .Join(
+                        db.Carts,
+                        ows => ows.order.CartId,
+                        c => c.CartId,
+                        (ows, c) => new { order = ows.order, orderStatus = ows.orderStatus, cart = c }
+                    )
+                    .OrderByDescending(o => o.order.OrderUpdatedDate)
+                    .ToList();
+
+                foreach(var order in newOrders)
+                {
+                    AllOrderItem orderItem = new AllOrderItem();
+                    orderItem.OrderId = order.order.OrderId;
+                    orderItem.BillNo = order.order.OrderBillNo;
+                    orderItem.ConfirmationNo = order.order.OrderConfirmationNo;
+                    orderItem.LastUpdate = order.order.OrderUpdatedDate;
+                    orderItem.NextDeadline = order.order.OrderNextDeadline;
+                    orderItem.OrderStatus = order.orderStatus.OrderStatusDescription;
+                    orderItem.OrderAmount = order.order.OrderAmount;
+
+                    var items = db.CartItems
+                        .Where(w => w.CartId == order.order.Cart.CartId)
+                        .Join(db.Items,
+                            ci => ci.ItemId,
+                            i => i.ItemId,
+                            (ci, i) => new {cartItem = ci, item = i})
+                        .ToList();
+
+                    orderItem.Items = new List<OrderCartItem>();
+                    foreach (var item in items)
+                    {
+                        OrderCartItem cartItem = new OrderCartItem();
+                        cartItem.ItemId = item.item.ItemId;
+                        cartItem.Quantity = item.cartItem.CartItemQnt;
+                        cartItem.ItemName = item.item.ItemName;
+                        cartItem.ItemPrice = item.item.ItemPrice;
+
+                        var image = db.Images.Where(w => w.ItemId == item.item.ItemId).FirstOrDefault();
+                        if (image != null)
+                        {
+                            cartItem.ItemImageUrl = image.ImageUrl;
+                        }
+                        orderItem.Items.Add(cartItem);
+                    }
+
+                    orders.Add(orderItem);
+                }
+            }
+            return View(orders);
+        }
+        public ActionResult Sales()
+        {
+            List<AllOrderItem> orders = new List<AllOrderItem>();
+            using (FreshChoiceEntities db = new FreshChoiceEntities())
+            {
+                var newOrders = db.Orders
+                    .Join(
+                        db.OrderStatus,
+                        o => o.OrderStatusId,
+                        os => os.OrderStatusId,
+                        (o, os) => new { order = o, orderStatus = os }
+                    )
+                    .Join(
+                        db.Carts,
+                        ows => ows.order.CartId,
+                        c => c.CartId,
+                        (ows, c) => new { order = ows.order, orderStatus = ows.orderStatus, cart = c }
+                    )
+                    .Where(w => w.orderStatus.OrderStatusOrder == OrderProcessingStatus.ONSALES 
+                            || w.orderStatus.OrderStatusOrder == OrderProcessingStatus.PLACED)
+                    .OrderBy(o=> o.order.OrderUpdatedDate)
+                    .ToList();
+
+                foreach (var order in newOrders)
+                {
+                    AllOrderItem orderItem = new AllOrderItem();
+                    orderItem.OrderId = order.order.OrderId;
+                    orderItem.BillNo = order.order.OrderBillNo;
+                    orderItem.ConfirmationNo = order.order.OrderConfirmationNo;
+                    orderItem.LastUpdate = order.order.OrderUpdatedDate;
+                    orderItem.NextDeadline = order.order.OrderNextDeadline;
+                    orderItem.OrderStatus = order.orderStatus.OrderStatusDescription;
+                    orderItem.OrderAmount = order.order.OrderAmount;
+
+                    var items = db.CartItems
+                        .Where(w => w.CartId == order.order.Cart.CartId)
+                        .Join(db.Items,
+                            ci => ci.ItemId,
+                            i => i.ItemId,
+                            (ci, i) => new { cartItem = ci, item = i })
+                        .ToList();
+
+                    orderItem.Items = new List<OrderCartItem>();
+                    foreach (var item in items)
+                    {
+                        OrderCartItem cartItem = new OrderCartItem();
+                        cartItem.ItemId = item.item.ItemId;
+                        cartItem.Quantity = item.cartItem.CartItemQnt;
+                        cartItem.ItemName = item.item.ItemName;
+                        cartItem.ItemPrice = item.item.ItemPrice;
+
+                        var image = db.Images.Where(w => w.ItemId == item.item.ItemId).FirstOrDefault();
+                        if (image != null)
+                        {
+                            cartItem.ItemImageUrl = image.ImageUrl;
+                        }
+                        orderItem.Items.Add(cartItem);
+                    }
+
+                    orders.Add(orderItem);
+                }
+            }
+            return View(orders);
+        }
+        public ActionResult Delivery()
+        {
+            List<AllOrderItem> orders = new List<AllOrderItem>();
+            using (FreshChoiceEntities db = new FreshChoiceEntities())
+            {
+                var newOrders = db.Orders
+                    .Join(
+                        db.OrderStatus,
+                        o => o.OrderStatusId,
+                        os => os.OrderStatusId,
+                        (o, os) => new { order = o, orderStatus = os }
+                    )
+                    .Join(
+                        db.Carts,
+                        ows => ows.order.CartId,
+                        c => c.CartId,
+                        (ows, c) => new { order = ows.order, orderStatus = ows.orderStatus, cart = c }
+                    )
+                    .Where(w => w.orderStatus.OrderStatusOrder == OrderProcessingStatus.COMPLETED)
+                    .OrderBy(o => o.order.OrderUpdatedDate)
+                    .ToList();
+
+                foreach (var order in newOrders)
+                {
+                    AllOrderItem orderItem = new AllOrderItem();
+                    orderItem.OrderId = order.order.OrderId;
+                    orderItem.BillNo = order.order.OrderBillNo;
+                    orderItem.ConfirmationNo = order.order.OrderConfirmationNo;
+                    orderItem.LastUpdate = order.order.OrderUpdatedDate;
+                    orderItem.NextDeadline = order.order.OrderNextDeadline;
+                    orderItem.OrderStatus = order.orderStatus.OrderStatusDescription;
+                    orderItem.OrderAmount = order.order.OrderAmount;
+
+                    var items = db.CartItems
+                        .Where(w => w.CartId == order.order.Cart.CartId)
+                        .Join(db.Items,
+                            ci => ci.ItemId,
+                            i => i.ItemId,
+                            (ci, i) => new { cartItem = ci, item = i })
+                        .ToList();
+
+                    orderItem.Items = new List<OrderCartItem>();
+                    foreach (var item in items)
+                    {
+                        OrderCartItem cartItem = new OrderCartItem();
+                        cartItem.ItemId = item.item.ItemId;
+                        cartItem.Quantity = item.cartItem.CartItemQnt;
+                        cartItem.ItemName = item.item.ItemName;
+                        cartItem.ItemPrice = item.item.ItemPrice;
+
+                        var image = db.Images.Where(w => w.ItemId == item.item.ItemId).FirstOrDefault();
+                        if (image != null)
+                        {
+                            cartItem.ItemImageUrl = image.ImageUrl;
+                        }
+                        orderItem.Items.Add(cartItem);
+                    }
+
+                    orders.Add(orderItem);
+                }
+            }
+            return View(orders);
+        }
+        public ActionResult Counter()
+        {
+            List<AllOrderItem> orders = new List<AllOrderItem>();
+            using (FreshChoiceEntities db = new FreshChoiceEntities())
+            {
+                var newOrders = db.Orders
+                    .Join(
+                        db.OrderStatus,
+                        o => o.OrderStatusId,
+                        os => os.OrderStatusId,
+                        (o, os) => new { order = o, orderStatus = os }
+                    )
+                    .Join(
+                        db.Carts,
+                        ows => ows.order.CartId,
+                        c => c.CartId,
+                        (ows, c) => new { order = ows.order, orderStatus = ows.orderStatus, cart = c }
+                    )
+                    .Where(w => w.orderStatus.OrderStatusOrder == OrderProcessingStatus.READY)
+                    .OrderBy(o => o.order.OrderUpdatedDate)
+                    .ToList();
+
+                foreach (var order in newOrders)
+                {
+                    AllOrderItem orderItem = new AllOrderItem();
+                    orderItem.OrderId = order.order.OrderId;
+                    orderItem.BillNo = order.order.OrderBillNo;
+                    orderItem.ConfirmationNo = order.order.OrderConfirmationNo;
+                    orderItem.LastUpdate = order.order.OrderUpdatedDate;
+                    orderItem.NextDeadline = order.order.OrderNextDeadline;
+                    orderItem.OrderStatus = order.orderStatus.OrderStatusDescription;
+                    orderItem.OrderAmount = order.order.OrderAmount;
+
+                    var items = db.CartItems
+                        .Where(w => w.CartId == order.order.Cart.CartId)
+                        .Join(db.Items,
+                            ci => ci.ItemId,
+                            i => i.ItemId,
+                            (ci, i) => new { cartItem = ci, item = i })
+                        .ToList();
+
+                    orderItem.Items = new List<OrderCartItem>();
+                    foreach (var item in items)
+                    {
+                        OrderCartItem cartItem = new OrderCartItem();
+                        cartItem.ItemId = item.item.ItemId;
+                        cartItem.Quantity = item.cartItem.CartItemQnt;
+                        cartItem.ItemName = item.item.ItemName;
+                        cartItem.ItemPrice = item.item.ItemPrice;
+
+                        var image = db.Images.Where(w => w.ItemId == item.item.ItemId).FirstOrDefault();
+                        if (image != null)
+                        {
+                            cartItem.ItemImageUrl = image.ImageUrl;
+                        }
+                        orderItem.Items.Add(cartItem);
+                    }
+
+                    orders.Add(orderItem);
+                }
+            }
+            return View(orders);
+        }
+        public ActionResult UpdateOrderStatus(int Id, int StatusOrder, DateTime NextDeadline)
+        {
+            try
+            {
+                using(FreshChoiceEntities db = new FreshChoiceEntities())
+                {
+                    Order order = db.Orders.Where(w => w.OrderId == Id).FirstOrDefault();
+                    if (order != null)
+                    {
+                        if (StatusOrder == OrderProcessingStatus.COMPLETED)
+                        {
+                            // assign delivery person
+                            var user = db.Users
+                                .Join(
+                                    db.Roles,
+                                    u => u.RoleId,
+                                    r => r.RoleId,
+                                    (u, r) => new { User = u, Role = r })
+                                .Where(w => w.Role.RoleId == RoleTypes.DELIVERY)
+                                .FirstOrDefault();
+                            if (user != null)
+                            {
+                                Delivery delivery = db.Deliveries
+                                    .Where(w => w.DeliveryId == order.DeliveryId)
+                                    .FirstOrDefault();
+                                delivery.UserId = user.User.UserId;
+                                db.SaveChanges();
+                            }
+                            else
+                            {
+                                return Json(false);
+                            }
+                        }
+
+                        order.OrderStatusId = db
+                            .OrderStatus.Where(w => w.OrderStatusOrder == StatusOrder)
+                            .Select(s => s.OrderStatusId).FirstOrDefault();
+                        order.OrderNextDeadline = NextDeadline;
+                        order.OrderUpdatedDate = DateTime.Now;
+                        db.SaveChanges();
+
+                        return Json(true);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            return Json(false);
+        }
+        public ActionResult CancelOrder(int Id)
+        {
+            try
+            {
+                using (FreshChoiceEntities db = new FreshChoiceEntities())
+                {
+                    Order order = db.Orders.Where(w => w.OrderId == Id).FirstOrDefault();
+                    db.Orders.Remove(order);
+                    db.SaveChanges();
+                    return Json(true);
+                }
+            }
+            catch (Exception) { }
+            return Json(false);
+        }
     }
 }

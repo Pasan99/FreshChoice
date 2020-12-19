@@ -1,0 +1,239 @@
+﻿@model FreshChoice.ViewModels.Cart.MainCartViewModel
+@{
+    ViewBag.Title = "Cart";
+}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
+<style>
+    .cart-item-container {
+        border-radius: 4px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        padding: 24px;
+    }
+
+    #map {
+        height: 100%;
+    }
+
+    /* Optional: Makes the sample page fill the window. */
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+</style>
+
+<div class="jumbotron" style="background:white;">
+
+    <div class="row">
+        <div class="col-sm-12 col-md-6" id="cart_items_container">
+            @if (Model.CartItems != null)
+            {
+                foreach (var item in Model.CartItems)
+                {
+                    <div class="cart-item-container" style="margin-bottom:15px;">
+                        <div class="row">
+                            <div class="col-2">
+                                <img src="@item.ItemImageUrl" width="50" height="50" class="rounded" alt="name">
+                            </div>
+                            <div class="col-7">
+                                <h3>@item.ItemName</h3>
+                                <p style="font-size:14px;">@(item.ItemDescription.Length > 80 ?  item.ItemDescription.Substring(0, 80) + "..." : item.ItemDescription)</p>
+                            </div>
+                            <div class="col-3">
+                                <h4 class="float-right" style="font-weight:bold;">LKR @((item.ItemPrice * item.Quantity).ToString("0.00"))</h4>
+
+                                <button class="btn float-right" style="margin-left:10px;" onclick="addItem('@item.ItemId')">+</button>
+                                <p class="float-right" style="font-size:12px;">x @item.Quantity</p>
+
+                                <button class="btn float-right" style="margin-right:10px;" onclick="removeItem('@item.ItemId')">-</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <div class="row">
+                <div class="col">
+                    <h3>Subtotal</h3>
+                </div>
+                <div class="col">
+                    <h4 id="subTotal" class="text-right" style="font-weight:bold;">LKR @Model.SubTotal.ToString("0.00")</h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <h3>Delivery Fee</h3>
+                </div>
+                <div class="col">
+                    <h4 id="deliveryFee" class="text-right" style="font-weight:lighter;">@(Model.DeliveryFee == 0 ? "Free": "(" + Model.DistanceInKiloMeters.ToString("0.00") + "KM)  - " + "LKR " + Model.DeliveryFee.ToString("0.00"))</h4>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col">
+                    <h3>Total</h3>
+                </div>
+                <div class="col">
+                    <h3 id="total" class="text-right" style="font-weight:bold;">LKR @Model.Total.ToString("0.00")</h3>
+                </div>
+            </div>
+            <br />
+            @if (Model.Address != null)
+            {
+                <br />
+                <div class="alert alert-dark" role="alert">
+                    <h2 class="alert-heading">Deliver To</h2>
+                    <hr>
+                    <p id="userName" style="font-size:14px; font-weight:bold">@Model.UserName</p>
+                    <p id="address" style="font-size:14px;">@Model.Address</p>
+                    <p id="phone" style="font-size:14px;">@Model.UserPhone</p>
+                    <br />
+
+                </div>
+            }
+            else
+            {
+                <a href="/User/Address" class="btn btn-outline-secondary btn-block">Add your address</a>
+            }
+
+            <br />
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">Terms & Conditions</h4>
+                <p style="font-size:14px;">Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so that you can see how spacing within an alert works with this kind of content.</p>
+                <hr>
+                <p style="font-size:14px;" class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
+            </div>
+            <form>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="pickupCheckBox" onchange="setPickup(this.checked)">
+                    <label class="form-check-label" for="pickupCheckBox" style="margin-left:20px; margin-top:3px;">I will pickup the order from store</label>
+                </div>
+            </form>
+            <hr />
+            <a href="" role="button" aria-disabled="true" id="placeOrderBtn" class="btn btn-primary btn-block @(Model.Address == null || Model.Address.Length ==0 ? "disabled" : "")" style="font-size:24px; font-weight:bold;">Place Order</a>
+        </div>
+    </div>
+</div>
+
+<input id="dv" type="number" value="@Model.DeliveryFee" hidden/>
+<input id="tv" type="number" value="@Model.Total" hidden />
+<input id="aa" type="checkbox" hidden checked="@(Model.Address == null || Model.Address.Length ==0 ? false : true)"/>
+
+<script>
+    var deliveryFee = document.getElementById("deliveryFee").innerHTML;
+    var deliveryValue = $("#dv").val();
+    var totalValue = $("#tv").val();
+    var haveAddress = document.getElementById("aa").checked;
+
+    function refreshCartItems(data) {
+        let html = "";
+        for (let i = 0; i < data.CartItems.length; i++) {
+            let item = data.CartItems[i];
+            let price = item.ItemPrice * item.Quantity;
+            let description = "";
+            if (item.ItemDescription.length > 80) {
+                description = item.ItemDescription.substring(0, 80) + "...";
+            }
+            else {
+                description = item.ItemDescription;
+            }
+            html += `
+                <div class="cart-item-container" style="margin-bottom:15px;">
+                        <div class="row">
+                            <div class="col-2">
+                                <img src="`+ item.ItemImageUrl + `" width="50" height="50" class="rounded" alt="name">
+                            </div>
+                            <div class="col-7">
+                                <h3>`+ item.ItemName + `</h3>
+                                <p style="font-size:14px;">`+ description + `</p>
+                            </div>
+                            <div class="col-3">
+                                <h4 class="float-right" style="font-weight:bold;">LKR `+ price.toFixed(2) + `</h4>
+                                <button class="btn float-right" style="margin-left:10px;" onclick="addItem('`+ item.ItemId + `')">+</button>
+                                <p class="float-right" style="font-size:12px;">x `+ item.Quantity + `</p>
+
+                                <button class="btn float-right" style="margin-right:10px;" onclick="removeItem('`+ item.ItemId + `')">-</button>
+                            </div>
+                        </div>
+                </div>
+            `;
+        }
+        $("#cart_items_container").html(html);
+        $("#total").html("LKR " + data.Total.toFixed(2));
+        $("#subTotal").html("LKR " + data.SubTotal.toFixed(2));
+        totalValue = data.Total;
+        setPickup(document.getElementById("pickupCheckBox").checked);
+    }
+    function addItem(itemId) {
+        $.ajax({
+            type: "POST",
+            url: "/Cart/AddItem/" + itemId,
+            timeout: 600000,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function (data) {
+                console.log(data);
+                if (data != null) {
+                    console.log(data);
+                    refreshCartItems(data);
+                }
+                else {
+                    alert("Something went wrong please try again");
+                }
+            },
+            error: function (e) {
+                alert("Something went wrong please try again");
+
+            }
+        });
+    }
+    function removeItem(itemId) {
+        $.ajax({
+            type: "POST",
+            url: "/Cart/RemoveItem/" + itemId,
+            timeout: 600000,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function (data) {
+                console.log(data);
+                if (data != null) {
+                    refreshCartItems(data);
+                }
+                else {
+                    alert("Something went wrong please try again");
+                }
+            },
+            error: function (e) {
+                alert("Something went wrong please try again");
+
+            }
+        });
+    }
+    function setPickup(isTrue) {
+        let total = 0;
+        console.log(haveAddress);
+        if (isTrue) {
+            $("#deliveryFee").html("-");
+            total = totalValue - deliveryValue;
+            $("#placeOrderBtn").removeClass("disabled");
+        }
+        else {
+            if (haveAddress == false) {
+                $("#placeOrderBtn").addClass("disabled");
+            }
+            $("#deliveryFee").html(deliveryFee);
+            total = totalValue;
+        }
+        $("#total").html("LKR " + parseFloat(total).toFixed(2));
+    }
+</script>

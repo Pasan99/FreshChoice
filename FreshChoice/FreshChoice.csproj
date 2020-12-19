@@ -63,6 +63,7 @@
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Device" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Pipelines, Version=5.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.Pipelines.5.0.1\lib\net461\System.IO.Pipelines.dll</HintPath>
@@ -154,6 +155,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
@@ -192,6 +194,7 @@
     <Compile Include="Models\Delivery.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\DeliveryTypes.cs" />
     <Compile Include="Models\Image.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
@@ -201,12 +204,15 @@
     <Compile Include="Models\Order.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\OrderProcessingStatus.cs" />
     <Compile Include="Models\OrderStatu.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Role.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\RoleTypes.cs" />
+    <Compile Include="Models\StoreLocation.cs" />
     <Compile Include="Models\Transaction.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
@@ -217,8 +223,11 @@
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\CartHelper.cs" />
+    <Compile Include="ViewModels\Admin\AllOrderItem.cs" />
     <Compile Include="ViewModels\Admin\EditItemViewModel.cs" />
     <Compile Include="ViewModels\Admin\ManageCategoriesViewModel.cs" />
+    <Compile Include="ViewModels\Cart\MainCartViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -298,7 +307,6 @@
     <Content Include="Views\Admin\Items.cshtml" />
     <Content Include="Views\Admin\ManageCategories.cshtml" />
     <Content Include="Views\Admin\EditItem.cshtml" />
-    <Content Include="Views\Shared\CustomerHomeLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

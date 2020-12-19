@@ -20,12 +20,15 @@ namespace FreshChoice.Models
         public string OrderConfirmationNo { get; set; }
         public System.DateTime OrderUpdatedDate { get; set; }
         public System.DateTime OrderNextDeadline { get; set; }
-        public int DeliveryId { get; set; }
+        public Nullable<int> DeliveryId { get; set; }
         public int OrderStatusId { get; set; }
         public int CartId { get; set; }
+        public double OrderAmount { get; set; }
+        public int UserId { get; set; }
     
         public virtual Cart Cart { get; set; }
         public virtual Cart Cart1 { get; set; }
         public virtual OrderStatu OrderStatu { get; set; }
+        public virtual User User { get; set; }
     }
 }
