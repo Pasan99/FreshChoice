@@ -250,6 +250,9 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="imgProducts\carrot-image.png" />
+    <Content Include="imgProducts\carrot.png" />
+    <Content Include="imgResource\phone-call.png" />
     <Content Include="Models\DBModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DBModel.Context.cs</LastGenOutput>
@@ -288,6 +291,7 @@
     <Content Include="imgSlider\Slider1.png" />
     <Content Include="imgSlider\Slider2.png" />
     <Content Include="imgSlider\Slider3.png" />
+    <Content Include="Views\Home\ProductStyle.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
