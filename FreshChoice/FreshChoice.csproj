@@ -230,6 +230,16 @@
     <Compile Include="ViewModels\Cart\MainCartViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="BootStrap\css\bootstrap-grid.css" />
+    <Content Include="BootStrap\css\bootstrap-grid.min.css" />
+    <Content Include="BootStrap\css\bootstrap-reboot.css" />
+    <Content Include="BootStrap\css\bootstrap-reboot.min.css" />
+    <Content Include="BootStrap\css\bootstrap.css" />
+    <Content Include="BootStrap\css\bootstrap.min.css" />
+    <Content Include="BootStrap\js\bootstrap.bundle.js" />
+    <Content Include="BootStrap\js\bootstrap.bundle.min.js" />
+    <Content Include="BootStrap\js\bootstrap.js" />
+    <Content Include="BootStrap\js\bootstrap.min.js" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
@@ -253,6 +263,8 @@
     <Content Include="imgProducts\carrot-image.png" />
     <Content Include="imgProducts\carrot.png" />
     <Content Include="imgResource\phone-call.png" />
+    <Content Include="jQuery\jquery.nice-number.css" />
+    <Content Include="jQuery\jquery.nice-number.js" />
     <Content Include="Models\DBModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DBModel.Context.cs</LastGenOutput>
@@ -277,6 +289,16 @@
     <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="BootStrap\css\bootstrap-grid.css.map" />
+    <Content Include="BootStrap\css\bootstrap-grid.min.css.map" />
+    <Content Include="BootStrap\css\bootstrap-reboot.css.map" />
+    <Content Include="BootStrap\css\bootstrap-reboot.min.css.map" />
+    <Content Include="BootStrap\css\bootstrap.css.map" />
+    <Content Include="BootStrap\css\bootstrap.min.css.map" />
+    <Content Include="BootStrap\js\bootstrap.bundle.js.map" />
+    <Content Include="BootStrap\js\bootstrap.bundle.min.js.map" />
+    <Content Include="BootStrap\js\bootstrap.js.map" />
+    <Content Include="BootStrap\js\bootstrap.min.js.map" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -291,6 +313,7 @@
     <Content Include="imgSlider\Slider1.png" />
     <Content Include="imgSlider\Slider2.png" />
     <Content Include="imgSlider\Slider3.png" />
+    <Content Include="Views\Home\Product.js" />
     <Content Include="Views\Home\ProductStyle.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

@@ -52,22 +52,31 @@
 
     <!---Product Items-->
 
+
+
     <div class="card" style="width: 18rem;">
         <br />
         <img class="card-img-top" src="~/imgProducts/carrot.png" alt="Card image cap">
         <div class="card-body">
             <h5 class="card-title" style="text-align:center">Carrot</h5>
             <p class="card-text" style="text-align:center">Fresh Sri Lankan Carrot</p>
-            <a href="#" class="btn btn-primary" style="align-content:center">Add to Cart</a>
-            <button type="button" class="btn btn-outline-secondary btn-number" disabled="disabled" data-template="minus" data-field="quant[1]">
-                <span class="fa fa-minus"></span>
+            @* <a href="#" class="btn btn-primary" style="align-content:center">Add to Cart</a>
+        <button type="button" class="btn btn-outline-secondary btn-number" disabled="disabled" data-template="minus" data-field="quant[1]">
+            <span class="fa fa-minus"></span>
+        </button>
+        <input type="text" name="quant[1]" class="form-control input-number" value="1" min="1" max="10">
+        <span class="input-group-append">
+            <button type="button" class="btn btn-outline-secondary btn-number" data-type="plus" data-field="quant[1]">
+                <span class="fa fa-plus"></span>
             </button>
-            <input type="text" name="quant[1]" class="form-control input-number" value="1" min="1" max="10">
-            <span class="input-group-append">
-                <button type="button" class="btn btn-outline-secondary btn-number" data-type="plus" data-field="quant[1]">
-                    <span class="fa fa-plus"></span>
-                </button>
-            </span>
+        </span>*@
+
+        <div class="box">
+
+            <input class="inputbox" type="number" value="1">
+
+        </div>
+
         </div>
     </div>
 <script>
