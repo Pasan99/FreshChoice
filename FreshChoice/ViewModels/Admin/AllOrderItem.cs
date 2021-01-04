@@ -38,6 +38,8 @@ namespace FreshChoice.ViewModels.Admin
         public double ItemPrice { get; set; }
         public string ItemImageUrl { get; set; }
         public string ItemDescription { get; set; }
+        public string ItemBrand { get; set; }
+        public string ItemCategory { get; set; }
         //public OrderCartItem(int ItemId, int Quantity, string ItemName, double ItemPrice, string ItemImageUrl)
         //{
         //    this.ItemId = ItemId;
