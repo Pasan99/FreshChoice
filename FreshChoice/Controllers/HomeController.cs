@@ -27,5 +27,14 @@ namespace FreshChoice.Controllers
 
             return View();
         }
+
+        public ActionResult Category()
+        {
+            ViewBag.Message = "Category Page";
+
+            return View();
+
+        }
+
     }
 }

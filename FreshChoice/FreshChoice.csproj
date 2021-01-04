@@ -250,6 +250,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="imgSlider\leek.png" />
     <Content Include="Models\DBModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>DBModel.Context.cs</LastGenOutput>
@@ -307,6 +308,7 @@
     <Content Include="Views\Admin\Items.cshtml" />
     <Content Include="Views\Admin\ManageCategories.cshtml" />
     <Content Include="Views\Admin\EditItem.cshtml" />
+    <Content Include="Views\Home\Category.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
