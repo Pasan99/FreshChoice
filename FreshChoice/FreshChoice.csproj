@@ -63,6 +63,7 @@
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Device" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Pipelines, Version=5.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.Pipelines.5.0.1\lib\net461\System.IO.Pipelines.dll</HintPath>
@@ -154,6 +155,8 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\CartController.cs" />
+    <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Crypto .cs" />
@@ -193,7 +196,6 @@
     <Compile Include="Models\Delivery.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\Extended\User.cs" />
     <Compile Include="Models\Image.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
@@ -211,6 +213,7 @@
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\RoleTypes.cs" />
+    <Compile Include="Models\StoreLocation.cs" />
     <Compile Include="Models\Transaction.cs">
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
@@ -222,9 +225,11 @@
       <DependentUpon>DBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\CartHelper.cs" />
     <Compile Include="ViewModels\Admin\AllOrderItem.cs" />
     <Compile Include="ViewModels\Admin\EditItemViewModel.cs" />
     <Compile Include="ViewModels\Admin\ManageCategoriesViewModel.cs" />
+    <Compile Include="ViewModels\Cart\MainCartViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -282,6 +287,9 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="imgSlider\Slider1.png" />
+    <Content Include="imgSlider\Slider2.png" />
+    <Content Include="imgSlider\Slider3.png" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -301,13 +309,7 @@
     <Content Include="Views\Admin\Items.cshtml" />
     <Content Include="Views\Admin\ManageCategories.cshtml" />
     <Content Include="Views\Admin\EditItem.cshtml" />
-    <Content Include="Views\Admin\Orders.cshtml" />
-    <Content Include="Views\Admin\Sales.cshtml" />
-    <Content Include="Views\Admin\Delivery.cshtml" />
-    <Content Include="Views\Admin\Counter.cshtml" />
-    <Content Include="Views\User\Registration.cshtml" />
-    <Content Include="Views\User\VerifyAccount.cshtml" />
-    <Content Include="Views\User\Login.cshtml" />
+
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

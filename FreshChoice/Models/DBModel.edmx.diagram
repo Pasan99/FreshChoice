@@ -34,6 +34,7 @@
         <AssociationConnector Association="FreshChoiceModel.FK_User_Role" ManuallyRouted="false" />
         <AssociationConnector Association="FreshChoiceModel.FK_Transaction_Wallet" ManuallyRouted="false" />
         <AssociationConnector Association="FreshChoiceModel.FK_Wallet_User" ManuallyRouted="false" />
+
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
