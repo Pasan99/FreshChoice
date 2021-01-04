@@ -1,0 +1,254 @@
+﻿@model FreshChoice.ViewModels.Admin.ManageCategoriesViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+<div class="row">
+    <div class="col-lg-6 my-auto">
+        <h1>Categories & Brands</h1>
+    </div>
+    <div class="col-lg-6 my-auto">
+    </div>
+</div>
+
+<hr />
+
+<br />
+<div class="row">
+    <div class="col">
+        <h2>Categories</h2>
+    </div>
+    <div class="col">
+        <button class="float-right btn btn-primary" onclick="addCategory()">Add New</button>
+    </div>
+</div>
+<br />
+<table id="categories_table" class="table display">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>CategoryName</th>
+            <th>Brands</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Categories)
+        {
+            <tr>
+                <td>@item.CategoryId</td>
+                <td>@item.CategoryName</td>
+                <td>
+                    @if (Model.Categories != null)
+                    {
+                        foreach (var brand in Model.Brands.Where(w => w.CategoryId == item.CategoryId).ToList())
+                        {
+                            @(brand.BrandName + ",")
+                        }
+                    }
+                </td>
+                <td>
+                    <button class="btn btn-primary" onclick="saveCategory('@item.CategoryId', '@item.CategoryName')">Edit</button>
+                    <button onclick="selectCategory('@item.CategoryId', '@item.CategoryName')" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                        Manage Brands
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col">
+                        @if (Model.Categories != null && Model.Brands != null && Model.Brands.Count > 0 && Model.Categories.Count > 0)
+                        {
+                            <h2 id="brandHeadings">Brands (@(Model.Categories.First().CategoryName))</h2>
+                            <input hidden id="selectedId" value="@(Model.Categories.First().CategoryName)" />
+                        }
+                        else
+                        {
+                            <h2>Brands</h2>
+                        }
+                    </div>
+                    <div class="col">
+                        <button class="float-right btn btn-primary" onclick="addBrand()">Add New</button>
+                    </div>
+                </div>
+                <br />
+                <table id="brand_table" class="table table-bordered table-striped" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>CategoryId</th>
+                            <th>Name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Categories != null && Model.Brands != null && Model.Categories.Count > 0)
+                        {
+                            foreach (var brand in Model.Brands)
+                            {
+                                <tr>
+                                    <td>@brand.BrandId</td>
+                                    <th>@brand.CategoryId</th>
+                                    <td>@brand.BrandName</td>
+                                    <td><button class="btn btn-primary" onclick="saveBrand('@brand.BrandId', '@brand.BrandName')">Edit</button></td>
+                                </tr>
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var brandsTable;
+    $(document).ready(function () {
+        $('#categories_table').DataTable();
+        brandsTable = $("#brand_table").DataTable({
+            paging: false,
+            "pageLength": 10,
+            "order": [[0, "asc"]],
+            "columnDefs": [
+                {
+                    "targets": [1],
+                    "visible": false,
+                    "searchable": true
+                }
+            ],
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+        });
+    });
+
+    var selectedCategoryId = $("#selectedId").val();
+
+    function filterBrands(id) {
+        brandsTable
+            .column(1)
+            .search(id, true, false)
+            .draw();
+    }
+
+    function addBrand() {
+        var brandName = prompt("Please enter brand name", "");
+
+        if (brandName != null && brandName != "") {
+            $.ajax({
+                type: "POST",
+                url: "/Admin/SaveBrand?CategoryId=" + selectedCategoryId + "&BrandName=" + brandName,
+                timeout: 600000,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (data) {
+                    console.log(data);
+                    if (data != null && data != false) {
+                        window.location.href = "/Admin/ManageCategories";
+                    }
+                },
+                error: function (e) {
+                    alert("Something went wrong please try again");
+
+                }
+            });
+        }
+    }
+
+    function saveBrand(id, name) {
+        var brandName = prompt("Please enter brand name", name);
+
+        if (brandName != null && brandName != "") {
+            $.ajax({
+                type: "POST",
+                url: "/Admin/SaveBrand?BrandId=" + id + "&BrandName=" + brandName,
+                timeout: 600000,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (data) {
+                    console.log(data);
+                    if (data != null && data != false) {
+                        window.location.href = "/Admin/ManageCategories";
+                    }
+                },
+                error: function (e) {
+                    alert("Something went wrong please try again");
+
+                }
+            });
+        }
+    }
+
+    function saveCategory(id, existingName) {
+        selectedCategoryId = id;
+        var categoryName = prompt("Please enter category name", existingName);
+
+        if (categoryName != null && categoryName != "") {
+            $.ajax({
+                type: "POST",
+                url: "/Admin/SaveCategory?CategoryId=" + selectedCategoryId + "&CategoryName=" + categoryName,
+                timeout: 600000,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (data) {
+                    if (data != null && data != false) {
+                        window.location.href = "/Admin/ManageCategories";
+                    }
+                },
+                error: function (e) {
+                    alert("Something went wrong please try again");
+
+                }
+            });
+        }
+    }
+
+    function addCategory() {
+        var categoryName = prompt("Please enter category name", "");
+
+        if (categoryName != null && categoryName != "") {
+            $.ajax({
+                type: "POST",
+                url: "/Admin/SaveCategory?CategoryId=" + 0 + "&CategoryName=" + categoryName,
+                timeout: 600000,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (data) {
+                    if (data != null && data != false) {
+                        window.location.href = "/Admin/ManageCategories";
+                    }
+                },
+                error: function (e) {
+                    alert("Something went wrong please try again");
+
+                }
+            });
+        }
+    }
+    function selectCategory(id, name) {
+        $("#brandHeadings").val("Brands (" + name + ")");
+        filterBrands(id);
+        selectedCategoryId = id;
+    }
+</script>
