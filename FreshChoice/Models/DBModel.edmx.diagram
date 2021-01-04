@@ -4,20 +4,21 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="40e58fc8d9d2462a826c81e6c6f706c8" Name="Diagram1">
-        <EntityTypeShape EntityType="FreshChoiceModel.Address" Width="1.5" PointX="5.25" PointY="4.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="FreshChoiceModel.Brand" Width="1.5" PointX="3" PointY="4.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="FreshChoiceModel.Cart" Width="1.5" PointX="5.25" PointY="8" IsExpanded="true" />
-        <EntityTypeShape EntityType="FreshChoiceModel.CartItem" Width="1.5" PointX="7.5" PointY="8" IsExpanded="true" />
-        <EntityTypeShape EntityType="FreshChoiceModel.Category" Width="1.5" PointX="0.75" PointY="5" IsExpanded="true" />
-        <EntityTypeShape EntityType="FreshChoiceModel.Delivery" Width="1.5" PointX="0.75" PointY="2.125" IsExpanded="true" />
+      <Diagram DiagramId="cc9cb9e9d8654eab9c1963bda33ae49c" Name="Diagram1">
+        <EntityTypeShape EntityType="FreshChoiceModel.Address" Width="1.5" PointX="5.25" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FreshChoiceModel.Brand" Width="1.5" PointX="3" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FreshChoiceModel.Cart" Width="1.5" PointX="5.25" PointY="8.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="FreshChoiceModel.CartItem" Width="1.5" PointX="7.5" PointY="8.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="FreshChoiceModel.Category" Width="1.5" PointX="0.75" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="FreshChoiceModel.Delivery" Width="1.5" PointX="5.25" PointY="11.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="FreshChoiceModel.Image" Width="1.5" PointX="7.5" PointY="2.25" IsExpanded="true" />
         <EntityTypeShape EntityType="FreshChoiceModel.Item" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FreshChoiceModel.Order" Width="1.5" PointX="10.5" PointY="7.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="FreshChoiceModel.OrderStatu" Width="1.5" PointX="8.25" PointY="5.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="FreshChoiceModel.Role" Width="1.5" PointX="0.75" PointY="8.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="FreshChoiceModel.Transaction" Width="1.5" PointX="7.5" PointY="11" IsExpanded="true" />
-        <EntityTypeShape EntityType="FreshChoiceModel.User" Width="1.5" PointX="3" PointY="7.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="FreshChoiceModel.Wallet" Width="1.5" PointX="5.25" PointY="11" IsExpanded="true" />
+        <EntityTypeShape EntityType="FreshChoiceModel.Order" Width="1.5" PointX="10.5" PointY="8.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="FreshChoiceModel.OrderStatu" Width="1.5" PointX="8.25" PointY="5.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FreshChoiceModel.Role" Width="1.5" PointX="0.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FreshChoiceModel.Transaction" Width="1.5" PointX="7.5" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FreshChoiceModel.User" Width="1.5" PointX="3" PointY="8.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FreshChoiceModel.Wallet" Width="1.5" PointX="5.25" PointY="13.75" IsExpanded="true" />
         <AssociationConnector Association="FreshChoiceModel.FK_Address_User" ManuallyRouted="false" />
         <AssociationConnector Association="FreshChoiceModel.FK_Brand_Category" ManuallyRouted="false" />
         <AssociationConnector Association="FreshChoiceModel.FK_Item_Brand" ManuallyRouted="false" />
@@ -26,13 +27,13 @@
         <AssociationConnector Association="FreshChoiceModel.FK_Order_Cart" ManuallyRouted="false" />
         <AssociationConnector Association="FreshChoiceModel.FK_Order_Delivery" ManuallyRouted="false" />
         <AssociationConnector Association="FreshChoiceModel.FK_CartItem_Item" ManuallyRouted="false" />
+        <AssociationConnector Association="FreshChoiceModel.FK_Delivery_User" ManuallyRouted="false" />
+        <AssociationConnector Association="FreshChoiceModel.FK_Image_Item" ManuallyRouted="false" />
         <AssociationConnector Association="FreshChoiceModel.FK_Order_OrderStatus" ManuallyRouted="false" />
+        <AssociationConnector Association="FreshChoiceModel.FK_Order_User" ManuallyRouted="false" />
         <AssociationConnector Association="FreshChoiceModel.FK_User_Role" ManuallyRouted="false" />
         <AssociationConnector Association="FreshChoiceModel.FK_Transaction_Wallet" ManuallyRouted="false" />
         <AssociationConnector Association="FreshChoiceModel.FK_Wallet_User" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="FreshChoiceModel.Image" Width="1.5" PointX="7.5" PointY="1.125" />
-        <AssociationConnector Association="FreshChoiceModel.FK_Image_Item" />
-        <AssociationConnector Association="FreshChoiceModel.FK_Delivery_User" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

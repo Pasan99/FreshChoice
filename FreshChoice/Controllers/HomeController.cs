@@ -27,5 +27,13 @@ namespace FreshChoice.Controllers
 
             return View();
         }
+
+
+        public ActionResult Login()
+        {
+            ViewBag.Message = "Login .";
+
+            return View();
+        }
     }
 }
