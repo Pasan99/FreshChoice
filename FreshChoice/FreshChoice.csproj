@@ -228,6 +228,8 @@
     <Compile Include="ViewModels\Admin\EditItemViewModel.cs" />
     <Compile Include="ViewModels\Admin\ManageCategoriesViewModel.cs" />
     <Compile Include="ViewModels\Cart\MainCartViewModel.cs" />
+    <Compile Include="ViewModels\Home\IndexItem.cs" />
+    <Compile Include="ViewModels\Home\IndexViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="BootStrap\css\bootstrap-grid.css" />
@@ -334,6 +336,7 @@
     <Content Include="Views\Admin\Items.cshtml" />
     <Content Include="Views\Admin\ManageCategories.cshtml" />
     <Content Include="Views\Admin\EditItem.cshtml" />
+    <Content Include="Views\Home\Products.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

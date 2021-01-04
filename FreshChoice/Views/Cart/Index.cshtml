@@ -8,7 +8,6 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
-
 <style>
     .cart-item-container {
         border-radius: 4px;
@@ -43,11 +42,11 @@
                                 <img src="@item.ItemImageUrl" width="50" height="50" class="rounded" alt="name">
                             </div>
                             <div class="col-7">
-                                <h3>@item.ItemName</h3>
+                                <h4>@item.ItemName</h3>
                                 <p style="font-size:14px;">@(item.ItemDescription.Length > 80 ?  item.ItemDescription.Substring(0, 80) + "..." : item.ItemDescription)</p>
                             </div>
                             <div class="col-3">
-                                <h4 class="float-right" style="font-weight:bold;">LKR @((item.ItemPrice * item.Quantity).ToString("0.00"))</h4>
+                                <54 class="float-right" style="font-weight:bold;">LKR @((item.ItemPrice * item.Quantity).ToString("0.00"))</h4>
 
                                 <button class="btn float-right" style="margin-left:10px;" onclick="addItem('@item.ItemId')">+</button>
                                 <p class="float-right" style="font-size:12px;">x @item.Quantity</p>
