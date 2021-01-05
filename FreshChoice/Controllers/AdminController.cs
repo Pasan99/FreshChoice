@@ -1,4 +1,5 @@
-﻿using FreshChoice.Models;
+﻿using CustomAuthorizationFilter.Infrastructure;
+using FreshChoice.Models;
 using FreshChoice.ViewModels.Admin;
 using Newtonsoft.Json;
 using System;
@@ -10,8 +11,10 @@ using System.Web.Mvc;
 
 namespace FreshChoice.Controllers
 {
+    [CustomAuthenticationFilter]
     public class AdminController : Controller
     {
+        [CustomAuthorize("Admin")]
         public ActionResult Index()
         {
             return View();
@@ -157,6 +160,7 @@ namespace FreshChoice.Controllers
                             item.ItemQnt = (item.ItemQnt + (viewModel.ItemAvailableQnt - item.ItemAvailableQnt));
                         }
                         item.ItemPrice = viewModel.ItemPrice;
+                        item.ItemIsDeleted = false;
                         item.BrandId = viewModel.ItemBrandId;
                         if (viewModel.ItemId == 0)
                         {
@@ -361,6 +365,7 @@ namespace FreshChoice.Controllers
             }
             return View(orders);
         }
+        [CustomAuthorize("Admin", "Delivery")]
         public ActionResult Delivery()
         {
             List<AllOrderItem> orders = new List<AllOrderItem>();
@@ -487,6 +492,7 @@ namespace FreshChoice.Controllers
             }
             return View(orders);
         }
+        [CustomAuthorize("Admin", "Delivery")]
         public ActionResult UpdateOrderStatus(int Id, int StatusOrder, DateTime NextDeadline)
         {
             try

@@ -1,4 +1,5 @@
-﻿using FreshChoice.Models;
+﻿using CustomAuthorizationFilter.Infrastructure;
+using FreshChoice.Models;
 using FreshChoice.Utilities;
 using FreshChoice.ViewModels.Cart;
 using System;
@@ -9,17 +10,20 @@ using System.Web.Mvc;
 
 namespace FreshChoice.Controllers
 {
+    [CustomAuthenticationFilter]
     public class CartController : Controller
     {
         // GET: Cart
+        [CustomAuthorize("User", "Admin")]
         public ActionResult Index()
         {
-            int userId = 3;
+            int userId = int.Parse(Convert.ToString(Session["UserId"]));
             return View(GetCartViewModel(userId));
         }
+        [CustomAuthorize("User", "Admin")]
         public JsonResult AddItem(int Id)
         {
-            int userId = 3;
+            int userId = int.Parse(Convert.ToString(Session["UserId"]));
             try
             {
                 using (FreshChoiceEntities db = new FreshChoiceEntities())
@@ -41,9 +45,10 @@ namespace FreshChoice.Controllers
             
             return Json(GetCartViewModel(userId));
         }
+        [CustomAuthorize("User", "Admin")]
         public JsonResult RemoveItem(int Id)
         {
-            int userId = 3;
+            int userId = int.Parse(Convert.ToString(Session["UserId"]));
             try
             {
                 using (FreshChoiceEntities db = new FreshChoiceEntities())
@@ -65,9 +70,10 @@ namespace FreshChoice.Controllers
 
             return Json(GetCartViewModel(userId));
         }
+        [CustomAuthorize("User", "Admin")]
         public ActionResult PlaceOrder(bool IsPickup)
         {
-            int userId = 3;
+            int userId = int.Parse(Convert.ToString(Session["UserId"]));
             string deliveryType = IsPickup ? DeliveryTypes.PICKUP : DeliveryTypes.HOME_DELIVERY;
             return View(CartHelper.GetInstance(userId).PlaceOrder(deliveryType));
         }
@@ -79,10 +85,14 @@ namespace FreshChoice.Controllers
                 viewModel.CartItems = CartHelper.GetInstance(UserId).GetOrderCartItems();
 
                 double total = 0;
-                foreach(var item in viewModel.CartItems)
+                if(viewModel.CartItems != null)
                 {
-                    total += (item.ItemPrice * item.Quantity);
+                    foreach (var item in viewModel.CartItems)
+                    {
+                        total += (item.ItemPrice * item.Quantity);
+                    }
                 }
+                
                 viewModel.SubTotal = total;
                 viewModel.DeliveryFee = CartHelper.GetInstance(UserId).GetDeliveryFees();
                 viewModel.Total = viewModel.SubTotal + viewModel.DeliveryFee;

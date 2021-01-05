@@ -1,0 +1,35 @@
+﻿
+.box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+input {
+    border: none;
+    outline: none;
+    padding: 5px;
+    border-radius: 5px;
+    margin: 0 5px !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,.5);
+}
+
+    input:hover,
+    input:focus {
+        background: darkgrey;
+        color: aliceblue;
+    }
+
+button {
+    
+    color: rgba(0,0,0,.5);
+    border: none;
+    outline: none;
+    padding: 0 10px;
+    border-radius: 5px;
+}
+
+    button:hover {
+        background-color: darkgrey;
+    }

@@ -166,3 +166,104 @@ nav {
     margin-top:-40px;
     width:95%;
 }
+/* Login Page Styles*/
+
+
+.main-head {
+    height: 150px;
+    background: #FFF;
+}
+
+.sidenav {
+    height: 100%;
+    background-color: #000;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+
+.main {
+    padding: 0px 10px;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .login-form {
+        margin-top: 10%;
+    }
+
+    .register-form {
+        margin-top: 10%;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .main {
+        margin-left: 40%;
+    }
+
+    .sidenav {
+        width: 40%;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+    }
+
+    .login-form {
+        margin-top: 25%;
+    }
+
+    .register-form {
+        margin-top: 20%;
+    }
+}
+.login-form .checkbox {
+    padding-left: 23px;
+}
+.login-form .margin-top {
+    padding-bottom: 25px;
+}
+span.light-color {
+    color: cornflowerblue;
+    /* font-size: 27px; */
+}
+
+.btn-secondary {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+.login-main-text {
+    margin-top: 20%;
+    padding: 60px;
+    color: #fff;
+}
+
+    .login-main-text h2 {
+        font-weight: 300;
+    }
+
+.btn-black {
+    background-color: #000 !important;
+    color: #fff;
+}
+
+.testimonial .card-body {
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 100px;
+    padding-bottom: 100px;
+}
+section#testimonial {
+    margin-top: 50px;
+}
+.bg-black {
+    color: #fff;
+    background-color: #000000;
+}
