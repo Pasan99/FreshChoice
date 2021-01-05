@@ -7,16 +7,75 @@ using System.Net.Mail;
 using System.Net;
 using System.Web.Security;
 using FreshChoice.Models;
-
+using CustomAuthorizationFilter.Infrastructure;
+using FreshChoice.Utilities;
 
 namespace FreshChoice.Controllers
 {
     public class UserController : Controller
     {
+        [CustomAuthorize("User", "Admin")]
+        public ActionResult MyOrders()
+        {
+            int userId = int.Parse(Convert.ToString(Session["UserId"]));
+            return View(CartHelper.GetInstance(userId).GetAllOrderItems());
+        }
         // GET: User
         public ActionResult Registration()
         {
             return View();
+        }
+        //[CustomAuthorize("Admin")]
+        public ActionResult AdminRegistration()
+        {
+            return View();
+        }
+        //[CustomAuthorize("Admin")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AdminRegistration([Bind(Exclude = "IsEmailVerified,ActivationCode")] User user)
+        {
+            bool Status = false;
+            string message = "";
+                #region //Email is already Exist 
+                var isExist = IsEmailExist(user.UserEmail);
+                if (isExist)
+                {
+                    ModelState.AddModelError("EmailExist", "Email already exist");
+                    return View(user);
+                }
+                #endregion
+
+                #region Generate Activation Code 
+                user.ActivationCode = Guid.NewGuid();
+                #endregion
+
+                #region  Password Hashing 
+                user.UserName = user.FirstName + " " + user.LastName;
+                user.UserContact = user.UserContact;
+                user.RoleId = user.RoleId;
+                user.UserPassword = Crypto.Hash(user.UserPassword);
+                user.ConfirmPassword = Crypto.Hash(user.ConfirmPassword); //
+                #endregion
+                user.IsEmailVerified = true;
+
+                #region Save to Database
+                using (FreshChoiceEntities dc = new FreshChoiceEntities())
+                {
+                    dc.Users.Add(user);
+                    dc.SaveChanges();
+
+                    //Send Email to User
+                    SendVerificationLinkEmail(user.UserEmail, user.ActivationCode.ToString());
+                    message = "Registration successfully done. Account activation link " +
+                        " has been sent to your email id:" + user.UserEmail;
+                    Status = true;
+                }
+                #endregion
+            
+            ViewBag.Message = message;
+            ViewBag.Status = Status;
+            return Redirect("/user/adminlogin");
         }
 
         [HttpPost]
@@ -73,7 +132,7 @@ namespace FreshChoice.Controllers
 
             ViewBag.Message = message;
             ViewBag.Status = Status;
-            return View(user);
+            return Redirect("/");
         }
         [NonAction]
         public bool IsEmailExist(string emailID)
@@ -147,14 +206,18 @@ namespace FreshChoice.Controllers
         [HttpGet]
         public ActionResult Login()
         {
+
             return View();
         }
+        public ActionResult AdminLogin()
+        {
 
-
+            return View();
+        }
         //Login POST
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(UserLogin login, string ReturnUrl = "")
+        public ActionResult AdminLogin(UserLogin login, string ReturnUrl = "/Admin")
         {
             string message = "";
             using (FreshChoiceEntities dc = new FreshChoiceEntities())
@@ -178,6 +241,9 @@ namespace FreshChoice.Controllers
                         cookie.HttpOnly = true;
                         Response.Cookies.Add(cookie);
 
+                        Session["UserId"] = v.UserId;
+                        Session["UserName"] = v.UserName;
+                        Session["UserRole"] = v.Role.RoleName;
 
                         if (Url.IsLocalUrl(ReturnUrl))
                         {
@@ -202,13 +268,91 @@ namespace FreshChoice.Controllers
             return View();
         }
 
-        //Logout
-        [Authorize]
+        //Login POST
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Login(UserLogin login, string ReturnUrl = "/")
+        {
+            string message = "";
+            using (FreshChoiceEntities dc = new FreshChoiceEntities())
+            {
+                var v = dc.Users.Where(a => a.UserEmail == login.UserEmail).FirstOrDefault();
+                if (v != null)
+                {
+                    if (!v.IsEmailVerified)
+                    {
+                        ViewBag.Message = "Please verify your email first";
+                        return View();
+                    }
+
+                    if (string.Compare(Crypto.Hash(login.UserPassword), v.UserPassword) == 0)
+                    {
+                        int timeout = login.RememberMe ? 525600 : 20; // 525600 min = 1 year
+                        var ticket = new FormsAuthenticationTicket(login.UserEmail, login.RememberMe, timeout);
+                        string encrypted = FormsAuthentication.Encrypt(ticket);
+                        var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, encrypted);
+                        cookie.Expires = DateTime.Now.AddMinutes(timeout);
+                        cookie.HttpOnly = true;
+                        Response.Cookies.Add(cookie);
+
+                        Session["UserId"] = v.UserId;
+                        Session["UserName"] = v.UserName;
+                        Session["UserRole"] = v.Role.RoleName;
+
+                        if (Url.IsLocalUrl(ReturnUrl))
+                        {
+                            return Redirect(ReturnUrl);
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+                    }
+                    else
+                    {
+                        message = "Invalid credential provided";
+                    }
+                }
+                else
+                {
+                    message = "Invalid credential provided";
+                }
+            }
+            ViewBag.Message = message;
+            return View();
+        }
+
+        //Logout
         public ActionResult Logout()
         {
+            Session["UserName"] = string.Empty;
+            Session["UserId"] = string.Empty;
             FormsAuthentication.SignOut();
             return RedirectToAction("Login", "User");
+        }
+
+        public ActionResult Address()
+        {
+            return View();
+        }
+        //Login POST
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Address(Address address)
+        {
+            int userId = int.Parse(Convert.ToString(Session["UserId"]));
+            using (FreshChoiceEntities db = new FreshChoiceEntities())
+            {
+                Address newAddress = new Address();
+                newAddress.UserId = userId;
+                newAddress.AddressName = address.AddressName;
+                newAddress.AddressDescription = address.AddressDescription;
+                newAddress.AddressLatitude = address.AddressLatitude;
+                newAddress.AddressLongitude = address.AddressLongitude;
+                db.Addresses.Add(newAddress);
+                db.SaveChanges();
+            }
+            return Redirect("/Cart");
         }
 
     }

@@ -14,7 +14,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
     @* <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
@@ -41,83 +41,143 @@
             top: -20px;
             left: -35px;
         }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
+        #content {
+            background-color: white;
+            flex: 1;
+        }
+
+        #footer {
+            background-color: #232323;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
+    <div id="content">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="/">FreshChoice</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">FreshChoice</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Home/Products">Products <span class="sr-only"></span></a>
+                    </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="/Home/Products">Products <span class="sr-only"></span></a>
-                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Home/About">About <span class="sr-only"></span></a>
+                    </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="/Home/About">About <span class="sr-only"></span></a>
-                </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Categories
+                        </a>
+                        <div id="categories"  class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        </div>
+                    </li>
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Categories
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Vegetables</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Organic</a>
-                        <a class="dropdown-item" href="#">Up Country</a>
-                        <div class="dropdown-divider"></div>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Fruits</a>
+                </ul>
+                <a href="/Cart" class="btn btn-default btn-lg btn-link" style="font-size:36px;">
+                    <span class="fa fa-shopping-cart"></span>
+                </a>
+                <span id="cartItemCount" class="badge badge-notify"></span>
+                @if (!string.IsNullOrEmpty(Convert.ToString(Session["UserName"])))
+                {
+                    <ul class="nav navbar-nav navbar-right">
+                        <li style="margin-right:20px;"><a href="/User/MyOrders">Welcome : @Session["UserName"]</a></li>
+                        <li style="margin-right:30px;"><a class="btn btn-sm btn-outline-danger" href="/User/Logout">Log out</a></li>
+                    </ul>
+                }
+                <div class="form-inline my-2 my-lg-0">
+                    <input id="searchTerm" class="form-control mr-sm-2" type="search" placeholder="Product Search" aria-label="Search">
+                    <button onclick="search()" class="btn btn-outline-info"><i class="fa fa-search"></i></button>
+                </div>
 
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </li>
 
-            </ul>
-            <a href="/Cart" class="btn btn-default btn-lg btn-link" style="font-size:36px;">
-                <span class="fa fa-shopping-cart"></span>
-            </a>
-            <span id="cartItemCount" class="badge badge-notify"></span>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-light my-2 my-sm-0" type="submit">Search</button>
-            </form>
+            </div>
+        </nav>
+
+        <br />
+        <div class="container-fluid">
+
+
+
+            @RenderBody()
+            <hr />
+            <br />
+            <br />
 
         </div>
-    </nav>
-
-
-    <br />
-    <div class="container body-content">
-
-
-
-        @RenderBody()
-        <hr />
-        <br />
-        <br />
-        <footer>
-
-            <h1>FreshChoice</h1>
-            <img width="40" height="40" src="~/imgResource/phone-call.png" />  <a>  +94 12 3456789</a>
-            <br />
-            <p>(Daily Open Hours 8:00am to 9:00pm)</p>
-            <br />
-            <p>&copy; 2020 - FrechChoice</p>
-        </footer>
     </div>
 
-    @*    @Scripts.Render("~/bundles/jquery")
-        @Scripts.Render("~/bundles/bootstrap")*@
-    @*    @RenderSection("scripts", required: false)*@
+
+    <footer id="footer">
+        <div class="row" style="padding:20px; padding-left:40px; padding-right:40px; color:white">
+            <div class="col">
+                <h4>FreshChoice</h4>
+                <p>&copy; 2020 - FrechChoice</p>
+            </div>
+            <div class="col float-right">
+                <p class="float-right" style="margin-left:10px;">(Daily Open Hours 8:00am to 9:00pm)</p>
+                <a class="float-right">Contact :   +94 12 3456789</a>
+            </div>
+        </div>
+
+
+    </footer>
+
+    <script>
+        $(document).ready(function () {
+            loadCategories();
+        });
+        function search() {
+            var query = $("#searchTerm").val();
+            console.log(query);
+            window.location.href = "/Home/Products?q=" + query;
+        }
+
+        function loadCategories() {
+            $.ajax({
+                type: "POST",
+                url: "/Home/GetCategories/1",
+                timeout: 600000,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (data1) {
+                    var data = data.categories;
+                    console.log(data);
+                    if (data != null) {
+                        var html = ``;
+                        for (var i = 0; i < data.length; i++) {
+                            html += `<a class="dropdown-item" href="/Home/Products?CategoryId=` + data[i].CategoryId +`">` + data[i].CategoryName+`</a>`;
+                        }
+                        $("#categories").html(html);
+                    }
+                    else {
+                        alert("Something went wrong please try again");
+                    }
+                },
+                error: function (e) {
+                    //alert("Something went wrong please try again");
+
+                }
+            });
+        }
+    </script>
 </body>
 </html>

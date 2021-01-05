@@ -138,7 +138,7 @@ namespace FreshChoice.Utilities
             using (FreshChoiceEntities db = new FreshChoiceEntities())
             {
                 Item item = db.Items.Where(w => w.ItemId == ItemId).FirstOrDefault();
-                if (item != null && item.ItemAvailableQnt >= Quantity)
+                if (item != null)
                 {
                     if (currentCart == null)
                     {
@@ -192,6 +192,7 @@ namespace FreshChoice.Utilities
             using (FreshChoiceEntities db = new FreshChoiceEntities()) {
                 currentCart.CartIsActive = false;
                 Cart cart = db.Carts.Where(w => w.CartId == currentCart.CartId).FirstOrDefault();
+                cart.CartIsActive = false;
                 db.SaveChanges();
                 return true;
             }
@@ -252,6 +253,7 @@ namespace FreshChoice.Utilities
                         var distanceInKM = userCoordinate.GetDistanceTo(shopCoordinate) / 1000;
                         deliveryFee = distanceInKM * 50;
                         delivery.DeliveryFee = deliveryFee;
+                        db.SaveChanges();
                     }
                 }
 

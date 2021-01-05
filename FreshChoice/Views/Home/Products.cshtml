@@ -8,18 +8,26 @@
 
     @foreach (var item in Model.Items)
     {
-        <div class="col-4">
+        <div class="col-3">
             <div class="card" style="width: 18rem; margin-top:8px;">
                 <br />
                 <img class="card-img-top" src="@(item.ItemImageUrl)" height="150" alt="Card image cap">
                 <div class="card-body">
                     <h5 class="card-title" style="text-align:center">@item.ItemName</h5>
-                    <p class="card-text" style="text-align:center">@item.ItemDescription</p>
+                    <p class="card-text" style="text-align:center">@(item.ItemDescription.Length > 100 ? item.ItemDescription.Substring(0, 100) + "..." : item.ItemDescription) </p>
 
 
                     @if (item.InCartCount == 0)
                     {
-                        <a href="#" onclick="addItem('@item.ItemId')" class="btn btn-primary btn-block text-center" style="align-content:center">Add to Cart</a>
+                        if (item.Quantity > 0)
+                        {
+                            <a href="#" onclick="addItem('@item.ItemId')" class="btn btn-primary btn-block text-center" style="align-content:center">Add to Cart</a>
+
+                        }
+                        else
+                        {
+                            <p class="text-center text-danger">Out of stock</p>
+                        }
                     }
                     else
                     {

@@ -1,4 +1,5 @@
-﻿using FreshChoice.Models;
+﻿using CustomAuthorizationFilter.Infrastructure;
+using FreshChoice.Models;
 using FreshChoice.Utilities;
 using FreshChoice.ViewModels.Admin;
 using FreshChoice.ViewModels.Home;
@@ -11,11 +12,13 @@ using System.Web.Mvc;
 namespace FreshChoice.Controllers
 {
     // Pasan Branch
+    [CustomAuthenticationFilter]
     public class HomeController : Controller
     {
+        [CustomAuthorize("User", "Admin")]
         public ActionResult Index()
         {
-            int userId = 3;
+            int userId = int.Parse(Convert.ToString(Session["UserId"]));
             List<OrderCartItem> cartItems = CartHelper.GetInstance(userId).GetOrderCartItems();
             IndexViewModel viewModel = new IndexViewModel();
             if (cartItems != null && cartItems.Count > 0)
@@ -36,6 +39,7 @@ namespace FreshChoice.Controllers
                     orderItem.ItemBrand = item.Brand.BrandName;
                     orderItem.ItemCategory = item.Brand.Category.CategoryName;
                     orderItem.ItemImageUrl = item.Images.First().ImageUrl;
+                    orderItem.Quantity = item.ItemAvailableQnt;
 
                     if (cartItems != null && cartItems.Count > 0)
                     {
@@ -51,10 +55,10 @@ namespace FreshChoice.Controllers
             }
             return View(viewModel);
         }
-
-        public ActionResult Products()
+        [CustomAuthorize("User", "Admin")]
+        public ActionResult Products(int CategoryId = 0, String q = null)
         {
-            int userId = 3;
+            int userId = int.Parse(Convert.ToString(Session["UserId"]));
             List<OrderCartItem> cartItems = CartHelper.GetInstance(userId).GetOrderCartItems();
             IndexViewModel viewModel = new IndexViewModel();
             if (cartItems != null && cartItems.Count > 0)
@@ -63,7 +67,15 @@ namespace FreshChoice.Controllers
             }
             using (FreshChoiceEntities db = new FreshChoiceEntities())
             {
-                var items = db.Items.ToList();
+                List<Item> items = items = db.Items.ToList();
+                if (CategoryId != 0)
+                {
+                    items = items.Where(w=> w.Brand.CategoryId == CategoryId).ToList();
+                }
+                if (q != null)
+                {
+                    items = items.Where(w => w.ItemName.ToLower().StartsWith(q.ToLower())).ToList();
+                }
                 viewModel.Items = new List<IndexItem>();
                 foreach (var item in items)
                 {
@@ -75,6 +87,7 @@ namespace FreshChoice.Controllers
                     orderItem.ItemBrand = item.Brand.BrandName;
                     orderItem.ItemCategory = item.Brand.Category.CategoryName;
                     orderItem.ItemImageUrl = item.Images.First().ImageUrl;
+                    orderItem.Quantity = item.ItemAvailableQnt;
 
                     if (cartItems != null && cartItems.Count > 0)
                     {
@@ -90,27 +103,32 @@ namespace FreshChoice.Controllers
             }
             return View(viewModel);
         }
-
+        [CustomAuthorize("User", "Admin")]
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
 
             return View();
         }
-
+        [CustomAuthorize("User", "Admin")]
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
 
             return View();
         }
-
-
-        public ActionResult Login()
+        [CustomAuthorize("User", "Admin")]
+        [AllowAnonymous]
+        [HttpGet]
+        public JsonResult GetCategories()
         {
-            ViewBag.Message = "Login .";
-
-            return View();
+            List<Category> categories;
+            using(FreshChoiceEntities db = new FreshChoiceEntities())
+            {
+                categories = db.Categories.ToList();
+            }
+            return Json(new { categories = categories, JsonRequestBehavior.AllowGet });
         }
+
     }
 }

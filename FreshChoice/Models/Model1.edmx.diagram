@@ -4,21 +4,21 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="cc9cb9e9d8654eab9c1963bda33ae49c" Name="Diagram1">
+      <Diagram DiagramId="dba54b75ecef4edfbc61833f5e41d530" Name="Diagram1">
         <EntityTypeShape EntityType="FreshChoiceModel.Address" Width="1.5" PointX="5.25" PointY="5" IsExpanded="true" />
         <EntityTypeShape EntityType="FreshChoiceModel.Brand" Width="1.5" PointX="3" PointY="5" IsExpanded="true" />
         <EntityTypeShape EntityType="FreshChoiceModel.Cart" Width="1.5" PointX="5.25" PointY="8.125" IsExpanded="true" />
         <EntityTypeShape EntityType="FreshChoiceModel.CartItem" Width="1.5" PointX="7.5" PointY="8.125" IsExpanded="true" />
         <EntityTypeShape EntityType="FreshChoiceModel.Category" Width="1.5" PointX="0.75" PointY="5.25" IsExpanded="true" />
         <EntityTypeShape EntityType="FreshChoiceModel.Delivery" Width="1.5" PointX="5.25" PointY="11.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="FreshChoiceModel.Image" Width="1.5" PointX="7.5" PointY="2.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="FreshChoiceModel.Image" Width="1.5" PointX="7.5" PointY="4.25" IsExpanded="true" />
         <EntityTypeShape EntityType="FreshChoiceModel.Item" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FreshChoiceModel.Order" Width="1.5" PointX="10.5" PointY="8.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="FreshChoiceModel.OrderStatu" Width="1.5" PointX="8.25" PointY="5.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FreshChoiceModel.Order" Width="1.5" PointX="10.5" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="FreshChoiceModel.OrderStatu" Width="1.5" PointX="8.25" PointY="11.25" IsExpanded="true" />
         <EntityTypeShape EntityType="FreshChoiceModel.Role" Width="1.5" PointX="0.75" PointY="9.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FreshChoiceModel.Transaction" Width="1.5" PointX="7.5" PointY="13.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="FreshChoiceModel.User" Width="1.5" PointX="3" PointY="8.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="FreshChoiceModel.Wallet" Width="1.5" PointX="5.25" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FreshChoiceModel.Transaction" Width="1.5" PointX="7.5" PointY="14" IsExpanded="true" />
+        <EntityTypeShape EntityType="FreshChoiceModel.User" Width="1.5" PointX="3" PointY="8.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="FreshChoiceModel.Wallet" Width="1.5" PointX="5.25" PointY="14" IsExpanded="true" />
         <AssociationConnector Association="FreshChoiceModel.FK_Address_User" ManuallyRouted="false" />
         <AssociationConnector Association="FreshChoiceModel.FK_Brand_Category" ManuallyRouted="false" />
         <AssociationConnector Association="FreshChoiceModel.FK_Item_Brand" ManuallyRouted="false" />
@@ -34,7 +34,6 @@
         <AssociationConnector Association="FreshChoiceModel.FK_User_Role" ManuallyRouted="false" />
         <AssociationConnector Association="FreshChoiceModel.FK_Transaction_Wallet" ManuallyRouted="false" />
         <AssociationConnector Association="FreshChoiceModel.FK_Wallet_User" ManuallyRouted="false" />
-
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

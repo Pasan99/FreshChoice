@@ -6,6 +6,11 @@
 @model FreshChoice.ViewModels.Home.IndexViewModel
 <!---image slider-->
 
+<style>
+    .carousel-item{
+        height:300px;
+    }
+</style>
 
 
 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
@@ -16,7 +21,7 @@
     </ol>
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img class="d-block w-100" src="~/imgSlider/Slider1.png" alt="First slide">
+            <img class="d-block w-100" src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max" alt="First slide">
 
         </div>
         <div class="carousel-item">
@@ -47,23 +52,31 @@
 
     @foreach (var item in Model.Items)
     {
-        <div class="col-4">
+        <div class="col-3">
             <div class="card" style="width: 18rem; margin-top:8px;">
                 <br />
                 <img class="card-img-top" src="@(item.ItemImageUrl)" height="150" alt="Card image cap">
                 <div class="card-body">
                     <h5 class="card-title" style="text-align:center">@item.ItemName</h5>
-                    <p class="card-text" style="text-align:center">@item.ItemDescription</p>
-                    
-                    
+                    <p class="card-text" style="text-align:center">@(item.ItemDescription.Length > 100 ? item.ItemDescription.Substring(0, 100) + "..." : item.ItemDescription) </p>
+
+
                     @if (item.InCartCount == 0)
                     {
-                        <a href="#" onclick="addItem('@item.ItemId')" class="btn btn-primary btn-block text-center" style="align-content:center">Add to Cart</a>
+                        if (item.Quantity > 0)
+                        {
+                            <a href="#" onclick="addItem('@item.ItemId')" class="btn btn-primary btn-block text-center" style="align-content:center">Add to Cart</a>
+
+                        }
+                        else
+                        {
+                            <p class="text-center text-danger">Out of stock</p>
+                        }
                     }
                     else
                     {
                         <div class="" style="text-align: center;">
-                            <input id="quantity" value="@item.InCartCount" type="number"/>
+                            <input id="quantity" value="@item.InCartCount" type="number" />
                         </div>
                     }
                 </div>

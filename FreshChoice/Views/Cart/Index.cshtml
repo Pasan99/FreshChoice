@@ -28,7 +28,7 @@
     }
 </style>
 
-<div class="jumbotron" style="background:white;">
+<div class="container" style="background:white;">
 
     <div class="row">
         <div class="col-sm-12 col-md-6" id="cart_items_container">
@@ -36,52 +36,55 @@
             {
                 foreach (var item in Model.CartItems)
                 {
+                    
                     <div class="cart-item-container" style="margin-bottom:15px;">
                         <div class="row">
                             <div class="col-2">
                                 <img src="@item.ItemImageUrl" width="50" height="50" class="rounded" alt="name">
                             </div>
-                            <div class="col-7">
-                                <h4>@item.ItemName</h3>
-                                <p style="font-size:14px;">@(item.ItemDescription.Length > 80 ?  item.ItemDescription.Substring(0, 80) + "..." : item.ItemDescription)</p>
+                            <div class="col-6">
+                                <h4>@item.ItemName</h4>
+                                <p style="font-size:14px;">@(item.ItemDescription.Length > 80 ? item.ItemDescription.Substring(0, 80) + "..." : item.ItemDescription)</p>
                             </div>
-                            <div class="col-3">
-                                <54 class="float-right" style="font-weight:bold;">LKR @((item.ItemPrice * item.Quantity).ToString("0.00"))</h4>
-
-                                <button class="btn float-right" style="margin-left:10px;" onclick="addItem('@item.ItemId')">+</button>
-                                <p class="float-right" style="font-size:12px;">x @item.Quantity</p>
-
-                                <button class="btn float-right" style="margin-right:10px;" onclick="removeItem('@item.ItemId')">-</button>
+                            <div class="col-4">
+                                <h5 class="float-right" style="font-weight:bold;">LKR @((item.ItemPrice * item.Quantity).ToString("0.00"))</h5>
+                                <hr style="background:white; color:white;" />
+                                <button class="btn btn-sm float-right" style="margin-left:10px;" onclick="addItem('@item.ItemId')">+</button>
+                                <p class="float-right" style="font-size:16px;">x @item.Quantity</p>
+                                
+                                <button class="btn btn-sm float-right" style="margin-right:10px;" onclick="removeItem('@item.ItemId')">-</button>
+                                
                             </div>
                         </div>
                     </div>
+                    
                 }
             }
         </div>
         <div class="col-sm-12 col-md-6">
             <div class="row">
                 <div class="col">
-                    <h3>Subtotal</h3>
+                    <h5>Subtotal</h5>
                 </div>
                 <div class="col">
-                    <h4 id="subTotal" class="text-right" style="font-weight:bold;">LKR @Model.SubTotal.ToString("0.00")</h4>
+                    <h5 id="subTotal" class="text-right" style="font-weight:bold;">LKR @Model.SubTotal.ToString("0.00")</h5>
                 </div>
             </div>
             <div class="row">
                 <div class="col">
-                    <h3>Delivery Fee</h3>
+                    <h6>Delivery Fee</h6>
                 </div>
                 <div class="col">
-                    <h4 id="deliveryFee" class="text-right" style="font-weight:lighter;">@(Model.DeliveryFee == 0 ? "Free": "(" + Model.DistanceInKiloMeters.ToString("0.00") + "KM)  - " + "LKR " + Model.DeliveryFee.ToString("0.00"))</h4>
+                    <h6 id="deliveryFee" class="text-right" style="font-weight:lighter;">@(Model.DeliveryFee == 0 ? "Free": "(" + Model.DistanceInKiloMeters.ToString("0.00") + "KM)  - " + "LKR " + Model.DeliveryFee.ToString("0.00"))</h6>
                 </div>
             </div>
             <hr />
             <div class="row">
                 <div class="col">
-                    <h3>Total</h3>
+                    <h4>Total</h4>
                 </div>
                 <div class="col">
-                    <h3 id="total" class="text-right" style="font-weight:bold;">LKR @Model.Total.ToString("0.00")</h3>
+                    <h4 id="total" class="text-right" style="font-weight:bold;">LKR @Model.Total.ToString("0.00")</h4>
                 </div>
             </div>
             <br />
@@ -104,20 +107,20 @@
             }
 
             <br />
-            <div class="alert alert-warning" role="alert">
+            @*<div class="alert alert-warning" role="alert">
                 <h4 class="alert-heading">Terms & Conditions</h4>
                 <p style="font-size:14px;">Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so that you can see how spacing within an alert works with this kind of content.</p>
                 <hr>
                 <p style="font-size:14px;" class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
-            </div>
+            </div>*@
             <form>
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="pickupCheckBox" onchange="setPickup(this.checked)">
-                    <label class="form-check-label" for="pickupCheckBox" style="margin-left:20px; margin-top:3px;">I will pickup the order from store</label>
+                    <label class="form-check-label" for="pickupCheckBox" style="padding-left:20px;">I will pickup the order from store</label>
                 </div>
             </form>
             <hr />
-            <a href="" role="button" aria-disabled="true" id="placeOrderBtn" class="btn btn-primary btn-block @(Model.Address == null || Model.Address.Length ==0 ? "disabled" : "")" style="font-size:24px; font-weight:bold;">Place Order</a>
+            <button onclick="placeOrder()" role="button" aria-disabled="true" id="placeOrderBtn" class="btn btn-primary btn-block @(Model.Address == null || Model.Address.Length ==0 ? "disabled" : "")" style="font-size:24px; font-weight:bold;">Place Order</button>
         </div>
     </div>
 </div>
@@ -132,6 +135,7 @@
     var deliveryFee = document.getElementById("deliveryFee").innerHTML;
     var deliveryValue = $("#dv").val();
     var totalValue = $("#tv").val();
+    var isPickup = false;
     var haveAddress = document.getElementById("aa").checked;
 
     //var mapProp = {
@@ -191,7 +195,8 @@
                 console.log(data);
                 if (data != null) {
                     console.log(data);
-                    refreshCartItems(data);
+                    //refreshCartItems(data);
+                    window.location.href = "";
                 }
                 else {
                     alert("Something went wrong please try again");
@@ -214,7 +219,8 @@
             success: function (data) {
                 console.log(data);
                 if (data != null) {
-                    refreshCartItems(data);
+                    //refreshCartItems(data);
+                    window.location.href = "";
                 }
                 else {
                     alert("Something went wrong please try again");
@@ -226,6 +232,11 @@
             }
         });
     }
+
+    function placeOrder() {
+        window.location.href = "/Cart/PlaceOrder?IsPickup=" + isPickup;
+    }
+
     function setPickup(isTrue) {
         let total = 0;
         console.log(haveAddress);
@@ -233,6 +244,7 @@
             $("#deliveryFee").html("-");
             total = totalValue - deliveryValue;
             $("#placeOrderBtn").removeClass("disabled");
+            isPickup = true;
         }
         else {
             if (haveAddress == false) {
@@ -240,6 +252,7 @@
             }
             $("#deliveryFee").html(deliveryFee);
             total = totalValue;
+            isPickup = false;
         }
         $("#total").html("LKR " + parseFloat(total).toFixed(2));
     }

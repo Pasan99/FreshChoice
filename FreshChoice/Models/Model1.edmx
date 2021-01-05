@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="FreshChoiceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="FreshChoiceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Address">
           <Key>
             <PropertyRef Name="AddressId" />
@@ -74,7 +74,7 @@
           </Key>
           <Property Name="ItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ItemName" Type="varchar" MaxLength="150" Nullable="false" />
-          <Property Name="ItemDescription" Type="varchar" MaxLength="300" Nullable="false" />
+          <Property Name="ItemDescription" Type="varchar" MaxLength="3300" Nullable="false" />
           <Property Name="ItemAvailableQnt" Type="int" Nullable="false" />
           <Property Name="ItemQnt" Type="int" Nullable="false" />
           <Property Name="ItemPrice" Type="float" Nullable="false" />
@@ -87,8 +87,8 @@
           </Key>
           <Property Name="OrderId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="OrderDescription" Type="varchar" MaxLength="250" Nullable="false" />
-          <Property Name="OrderBillNo" Type="varchar" MaxLength="20" Nullable="false" />
-          <Property Name="OrderConfirmationNo" Type="varchar" MaxLength="20" Nullable="false" />
+          <Property Name="OrderBillNo" Type="varchar" MaxLength="80" Nullable="false" />
+          <Property Name="OrderConfirmationNo" Type="varchar" MaxLength="40" Nullable="false" />
           <Property Name="OrderUpdatedDate" Type="datetime" Nullable="false" />
           <Property Name="OrderNextDeadline" Type="datetime" Nullable="false" />
           <Property Name="DeliveryId" Type="int" />
@@ -133,7 +133,7 @@
           <Property Name="RoleId" Type="int" Nullable="false" />
           <Property Name="UserPassword" Type="varchar" MaxLength="300" Nullable="false" />
           <Property Name="FirstName" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="LastName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="LastName" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="IsEmailVerified" Type="bit" Nullable="false" />
           <Property Name="ActivationCode" Type="uniqueidentifier" />
         </EntityType>
@@ -402,8 +402,7 @@
             <End Role="Wallet" EntitySet="Wallet" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="FreshChoiceModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -468,7 +467,19 @@
           <Property Name="DeliveryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="DeliveryType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="UserId" Type="Int32" />
-
+          <Property Name="DeliveryFee" Type="Double" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Delivery_User" FromRole="Delivery" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Image">
+          <Key>
+            <PropertyRef Name="ImageId" />
+          </Key>
+          <Property Name="ImageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ImageBlob" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="ImageUrl" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ImageDescription" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ItemId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Item" Relationship="Self.FK_Image_Item" FromRole="Image" ToRole="Item" />
         </EntityType>
         <EntityType Name="Item">
           <Key>
@@ -476,7 +487,7 @@
           </Key>
           <Property Name="ItemId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ItemName" Type="String" MaxLength="150" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="ItemDescription" Type="String" MaxLength="300" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ItemDescription" Type="String" MaxLength="3300" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="ItemAvailableQnt" Type="Int32" Nullable="false" />
           <Property Name="ItemQnt" Type="Int32" Nullable="false" />
           <Property Name="ItemPrice" Type="Double" Nullable="false" />
@@ -492,8 +503,8 @@
           </Key>
           <Property Name="OrderId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="OrderDescription" Type="String" MaxLength="250" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="OrderBillNo" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="OrderConfirmationNo" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="OrderBillNo" Type="String" MaxLength="80" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="OrderConfirmationNo" Type="String" MaxLength="40" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="OrderUpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="OrderNextDeadline" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="DeliveryId" Type="Int32" />
@@ -504,7 +515,7 @@
           <NavigationProperty Name="Cart" Relationship="Self.FK_Order_Cart" FromRole="Order" ToRole="Cart" />
           <NavigationProperty Name="Cart1" Relationship="Self.FK_Order_Delivery" FromRole="Order" ToRole="Cart" />
           <NavigationProperty Name="OrderStatu" Relationship="Self.FK_Order_OrderStatus" FromRole="Order" ToRole="OrderStatus" />
-
+          <NavigationProperty Name="User" Relationship="Self.FK_Order_User" FromRole="Order" ToRole="User" />
         </EntityType>
         <EntityType Name="OrderStatu">
           <Key>
@@ -544,17 +555,16 @@
           <Property Name="UserContact" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="RoleId" Type="Int32" Nullable="false" />
           <Property Name="UserPassword" Type="String" MaxLength="300" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="FirstName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="IsEmailVerified" Type="Boolean" Nullable="false" />
-          <Property Name="ActivationCode" Type="Guid" />
           <NavigationProperty Name="Addresses" Relationship="Self.FK_Address_User" FromRole="User" ToRole="Address" />
           <NavigationProperty Name="Carts" Relationship="Self.FK_Cart_User" FromRole="User" ToRole="Cart" />
           <NavigationProperty Name="Deliveries" Relationship="Self.FK_Delivery_User" FromRole="User" ToRole="Delivery" />
           <NavigationProperty Name="Orders" Relationship="Self.FK_Order_User" FromRole="User" ToRole="Order" />
           <NavigationProperty Name="Role" Relationship="Self.FK_User_Role" FromRole="User" ToRole="Role" />
           <NavigationProperty Name="Wallets" Relationship="Self.FK_Wallet_User" FromRole="User" ToRole="Wallet" />
-
+          <Property Name="FirstName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="IsEmailVerified" Type="Boolean" Nullable="false" />
+          <Property Name="ActivationCode" Type="Guid" />
         </EntityType>
         <EntityType Name="Wallet">
           <Key>
@@ -822,7 +832,7 @@
             <End Role="User" EntitySet="Users" />
             <End Role="Wallet" EntitySet="Wallets" />
           </AssociationSet>
-
+        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -881,10 +891,10 @@
           <EntitySetMapping Name="Deliveries">
             <EntityTypeMapping TypeName="FreshChoiceModel.Delivery">
               <MappingFragment StoreEntitySet="Delivery">
-
                 <ScalarProperty Name="DeliveryId" ColumnName="DeliveryId" />
                 <ScalarProperty Name="DeliveryType" ColumnName="DeliveryType" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="DeliveryFee" ColumnName="DeliveryFee" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -916,7 +926,6 @@
           <EntitySetMapping Name="Orders">
             <EntityTypeMapping TypeName="FreshChoiceModel.Order">
               <MappingFragment StoreEntitySet="Order">
-
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="OrderDescription" ColumnName="OrderDescription" />
                 <ScalarProperty Name="OrderBillNo" ColumnName="OrderBillNo" />
@@ -962,16 +971,16 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="FreshChoiceModel.User">
               <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="ActivationCode" ColumnName="ActivationCode" />
+                <ScalarProperty Name="IsEmailVerified" ColumnName="IsEmailVerified" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
                 <ScalarProperty Name="UserEmail" ColumnName="UserEmail" />
                 <ScalarProperty Name="UserContact" ColumnName="UserContact" />
                 <ScalarProperty Name="RoleId" ColumnName="RoleId" />
                 <ScalarProperty Name="UserPassword" ColumnName="UserPassword" />
-                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-                <ScalarProperty Name="LastName" ColumnName="LastName" />
-                <ScalarProperty Name="IsEmailVerified" ColumnName="IsEmailVerified" />
-                <ScalarProperty Name="ActivationCode" ColumnName="ActivationCode" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

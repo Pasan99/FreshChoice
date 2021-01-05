@@ -1,0 +1,15 @@
+﻿@model FreshChoice.Models.Order
+@{
+    ViewBag.Title = "PlaceOrder";
+}
+
+<h2>Order placed successfully</h2>
+<hr />
+<h4>Order Details</h4>
+<br />
+<p>Bill No - @Model.OrderBillNo</p>
+<p>Confirmation No - @Model.OrderConfirmationNo</p>
+<p>Placed On - @Model.OrderUpdatedDate</p>
+<p>Status - Placed</p>
+<p>Amount - @Model.OrderAmount</p>
+
