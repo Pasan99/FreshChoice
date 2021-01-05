@@ -31,6 +31,7 @@ namespace FreshChoice.Models
         public virtual DbSet<CartItem> CartItems { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Delivery> Deliveries { get; set; }
+        public virtual DbSet<Image> Images { get; set; }
         public virtual DbSet<Item> Items { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderStatu> OrderStatus { get; set; }
@@ -38,6 +39,5 @@ namespace FreshChoice.Models
         public virtual DbSet<Transaction> Transactions { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Wallet> Wallets { get; set; }
-        public virtual DbSet<Image> Images { get; set; }
     }
 }

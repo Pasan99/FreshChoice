@@ -19,9 +19,9 @@ namespace FreshChoice.Models
         {
             this.Addresses = new HashSet<Address>();
             this.Carts = new HashSet<Cart>();
-            this.Wallets = new HashSet<Wallet>();
             this.Deliveries = new HashSet<Delivery>();
             this.Orders = new HashSet<Order>();
+            this.Wallets = new HashSet<Wallet>();
         }
     
         public int UserId { get; set; }
@@ -30,17 +30,21 @@ namespace FreshChoice.Models
         public string UserContact { get; set; }
         public int RoleId { get; set; }
         public string UserPassword { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public bool IsEmailVerified { get; set; }
+        public Nullable<System.Guid> ActivationCode { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Address> Addresses { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Cart> Carts { get; set; }
-        public virtual Role Role { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Wallet> Wallets { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Delivery> Deliveries { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Order> Orders { get; set; }
+        public virtual Role Role { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Wallet> Wallets { get; set; }
     }
 }
