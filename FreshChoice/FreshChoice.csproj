@@ -231,11 +231,15 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\CartHelper.cs" />
     <Compile Include="ViewModels\Admin\AllOrderItem.cs" />
+    <Compile Include="ViewModels\Admin\CategorySalesItem.cs" />
+    <Compile Include="ViewModels\Admin\DashBoardViewModel.cs" />
     <Compile Include="ViewModels\Admin\EditItemViewModel.cs" />
     <Compile Include="ViewModels\Admin\ManageCategoriesViewModel.cs" />
     <Compile Include="ViewModels\Cart\MainCartViewModel.cs" />
+    <Compile Include="ViewModels\Home\CategoryViewModel.cs" />
     <Compile Include="ViewModels\Home\IndexItem.cs" />
     <Compile Include="ViewModels\Home\IndexViewModel.cs" />
+    <Compile Include="ViewModels\Home\MyProfileViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -332,6 +336,7 @@
     <Content Include="Views\Admin\Orders.cshtml" />
     <Content Include="Views\Admin\Sales.cshtml" />
     <Content Include="Views\User\Address.cshtml" />
+    <Content Include="Views\Home\Categories.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,5 +1,6 @@
 ﻿using CustomAuthorizationFilter.Infrastructure;
 using FreshChoice.Models;
+using FreshChoice.Utilities;
 using FreshChoice.ViewModels.Admin;
 using Newtonsoft.Json;
 using System;
@@ -17,8 +18,54 @@ namespace FreshChoice.Controllers
         [CustomAuthorize("Admin")]
         public ActionResult Index()
         {
-            return View();
+            DashBoardViewModel viewModel = new DashBoardViewModel();
+            using(FreshChoiceEntities db = new FreshChoiceEntities())
+            {
+                var items = db.Orders
+                    .Join(
+                    db.Carts,
+                    o => o.CartId,
+                    c => c.CartId,
+                    (o, c) => new { Order = o, Cart = c })
+                    .Join(
+                    db.CartItems,
+                    oc => oc.Cart.CartId,
+                    ci => ci.CartId,
+                    (oc, ci) => new {OrderCart = oc, CartItem = ci}
+                    )
+                    .Join(
+                    db.Items,
+                    occi => occi.CartItem.ItemId,
+                    i => i.ItemId,
+                    (occi, i) => new { Item = i, CartItem = occi.CartItem}
+                    ).ToList();
+                viewModel.CategorySalesItems = new List<CategorySalesItem>();
+                viewModel.TotalSales = 0;
+                foreach(var item in items)
+                {
+                    CategorySalesItem categorySalesItem = new CategorySalesItem();
+                    categorySalesItem.CategoryName = item.Item.Brand.Category.CategoryName;
+                    categorySalesItem.TotalSalesValue = item.CartItem.CartItemTotalPrice;
+                    viewModel.TotalSales += categorySalesItem.TotalSalesValue;
+                    viewModel.CategorySalesItems.Add(categorySalesItem);
+                }
+
+                var cats = viewModel.CategorySalesItems.Select(s => s.CategoryName).Distinct().ToList();
+                viewModel.DataJson = new List<double>();
+                foreach (var cat in cats)
+                {
+                    double total = 0;
+                    var catItems = viewModel.CategorySalesItems.Where(w => w.CategoryName == cat).ToList();
+                    foreach(var i in catItems)
+                    {
+                        total += i.TotalSalesValue;
+                    }
+                    viewModel.DataJson.Add(total);
+                }
+            }
+            return View(viewModel);
         }
+        [CustomAuthorize("Admin", "Sales")]
         public ActionResult Items()
         {
             List<Item> items = new List<Item>();
@@ -28,6 +75,8 @@ namespace FreshChoice.Controllers
             }
             return View(items);
         }
+
+        [CustomAuthorize("Admin", "Sales")]
         public ActionResult ManageCategories()
         {
             ManageCategoriesViewModel viewModel = new ManageCategoriesViewModel();
@@ -38,6 +87,8 @@ namespace FreshChoice.Controllers
             }
             return View(viewModel);
         }
+
+        [CustomAuthorize("Admin", "Sales")]
         public ActionResult SaveBrand(int? CategoryId, string BrandName, int? BrandId)
         {
             bool result = false;
@@ -70,6 +121,7 @@ namespace FreshChoice.Controllers
             catch (Exception) { }
             return Json(result);
         }
+        [CustomAuthorize("Admin", "Sales")]
         public ActionResult SaveCategory(int CategoryId, string CategoryName)
         {
             bool result = false;
@@ -97,6 +149,7 @@ namespace FreshChoice.Controllers
             catch (Exception) { }
             return Json(result);
         }
+        [CustomAuthorize("Admin", "Sales")]
         public ActionResult EditItem(int? Id)
         {
             EditItemViewModel viewModel = new EditItemViewModel();
@@ -129,6 +182,7 @@ namespace FreshChoice.Controllers
             return View(viewModel);
         }
 
+        [CustomAuthorize("Admin", "Sales")]
         public ActionResult SaveItem(EditItemViewModel viewModel)
         {
             bool result = false;
@@ -215,6 +269,7 @@ namespace FreshChoice.Controllers
             
             return Json(result);
         }
+        [CustomAuthorize("Admin", "Sales")]
         public ActionResult DeleteItem(int Id)
         {
             bool result = false;
@@ -237,8 +292,7 @@ namespace FreshChoice.Controllers
             }
             return Json(result);
         }
-
-        ///////////////////////////////////////////////
+        [CustomAuthorize("Admin")]
         public ActionResult Orders()
         {
             List<AllOrderItem> orders = new List<AllOrderItem>();
@@ -301,6 +355,7 @@ namespace FreshChoice.Controllers
             }
             return View(orders);
         }
+        [CustomAuthorize("Admin", "Sales")]
         public ActionResult Sales()
         {
             List<AllOrderItem> orders = new List<AllOrderItem>();
@@ -429,6 +484,7 @@ namespace FreshChoice.Controllers
             }
             return View(orders);
         }
+        [CustomAuthorize("Admin", "Order Manager")]
         public ActionResult Counter()
         {
             List<AllOrderItem> orders = new List<AllOrderItem>();
@@ -492,7 +548,7 @@ namespace FreshChoice.Controllers
             }
             return View(orders);
         }
-        [CustomAuthorize("Admin", "Delivery")]
+        [CustomAuthorize("Admin", "Order Manager", "Sales", "Delivery")]
         public ActionResult UpdateOrderStatus(int Id, int StatusOrder, DateTime NextDeadline)
         {
             try
@@ -544,17 +600,18 @@ namespace FreshChoice.Controllers
             }
             return Json(false);
         }
+        [CustomAuthorize("Admin", "Sales","User")]
         public ActionResult CancelOrder(int Id)
         {
+            if (Id == 0)
+            {
+                return Json(false);
+            }
             try
             {
-                using (FreshChoiceEntities db = new FreshChoiceEntities())
-                {
-                    Order order = db.Orders.Where(w => w.OrderId == Id).FirstOrDefault();
-                    db.Orders.Remove(order);
-                    db.SaveChanges();
-                    return Json(true);
-                }
+                int userId = int.Parse(Convert.ToString(Session["UserId"]));
+                CartHelper.GetInstance(userId).CancelOrder(Id);
+                return Json(true);
             }
             catch (Exception) { }
             return Json(false);

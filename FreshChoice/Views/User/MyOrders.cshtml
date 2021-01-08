@@ -1,5 +1,5 @@
 ﻿
-@model IEnumerable<FreshChoice.ViewModels.Admin.AllOrderItem>
+@model FreshChoice.ViewModels.Home.MyProfileViewModel
 @{
     ViewBag.Title = "My Orders";
     Layout = "/Views/Shared/_Layout.cshtml";
@@ -7,6 +7,67 @@
 
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+<div class="row">
+    <div class="col-3">
+        <div class="card text-white bg-dark mb-3" style="max-width: 100%">
+            <div class="card-header"><h3>Address</h3></div>
+            <div class="card-body">
+                <h6 class="card-title">@Model.User.UserName (@Model.User.UserEmail)</h6>
+                <hr />
+                <p class="card-text">@Model.Address.AddressDescription</p>
+                <p class="card-text"> GPS (@Model.Address.AddressLatitude, @Model.Address.AddressLongitude)</p>
+                <p class="card-text"> Phone : @Model.User.UserContact</p>
+                <a href="/User/Address/@Model.Address.AddressId" class="btn btn-block btn-primary">Change</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-9">
+        <div class="card bg-light mb-3" style="max-width: 100%">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col">
+                        <h5 class="card-title">My Wallet (@Model.Wallet.WalletDescription)</h5>
+                    </div>
+                    <div class="col">
+                        <p class="card-title float-right"> Wallet Owner : @Model.User.UserName</p>
+                    </div>
+                </div>
+            </div>
+            @if (Model.Wallet != null)
+            {
+            <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h2 class="card-title">Balance</h2>
+                    </div>
+                    <div class="col">
+                        <h2 class="card-title float-right">LKR @Model.Wallet.WalletTotal.ToString(".00")</h2>
+                    </div>
+                </div>
+                <hr />
+                <h3>Transactions</h3>
+                <br />
+                @foreach(var transaction in Model.Transactions)
+                {
+                    <div class="card text-white bg-dark mb-3" style="max-width: 100%; margin:0px; padding:0px;">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col">
+                                    <p class="card-title">@transaction.TransactionDescription.ToUpper() - @transaction.TransactionDate</p>
+                                </div>
+                                <div class="col">
+                                    <h5 class="card-title float-right">LKR @transaction.TransactionAmount.ToString(".00")</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            }
+        </div>
+    </div>
+</div>
+<br />
 <div class="row">
     <div class="col-lg-6 my-auto">
         <h1>My Orders (All)</h1>
@@ -17,37 +78,47 @@
 </div>
 
 <hr />
-<table id="orders_table" class="table display">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Bill No.</th>
-            <th>Confirmation No.</th>
-            <th>Last Update</th>
-            <th>Next Deadline</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Details</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+
+<div class="col">
+
+    <table id="orders_table" class="table display">
+        <thead>
             <tr>
-                <td width="5%">@item.OrderId</td>
-                <td>@item.BillNo</td>
-                <td width="5%">@item.ConfirmationNo</td>
-                <td>@item.LastUpdate</td>
-                <td>@item.NextDeadline</td>
-                <td>LKR @item.OrderAmount</td>
-                <td>@item.OrderStatus</td>
-                <td>
-                    <button onclick="filterItems('@item.OrderId')" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">View</button>
-                </td>
+                <th>Id</th>
+                <th>Bill No.</th>
+                <th>Confirmation No.</th>
+                <th>Last Update</th>
+                <th>Next Deadline</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Details</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Orders)
+            {
+                <tr>
+                    <td width="5%">@item.OrderId</td>
+                    <td>@item.BillNo</td>
+                    <td width="5%">@item.ConfirmationNo</td>
+                    <td>@item.LastUpdate</td>
+                    <td>@item.NextDeadline</td>
+                    <td>LKR @item.OrderAmount</td>
+                    <td>@item.OrderStatus</td>
+                    <td>
+                        <button onclick="filterItems('@item.OrderId')" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">View</button>
+                        @if (item.OrderStatusId == FreshChoice.Models.OrderProcessingStatus.PLACED)
+                        {
+                            <button onclick="cancelOrder('@item.OrderId')" type="button" class="btn btn-danger">Cancel Order</button>
+                        }
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 <br />
 <br />
 
@@ -75,7 +146,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var order in Model)
+                        @foreach (var order in Model.Orders)
                         {
                             foreach (var item in order.Items)
                             {
@@ -101,7 +172,11 @@
 <script>
     var itemsTable;
     $(document).ready(function () {
-        $('#orders_table').DataTable();
+        $('#orders_table').DataTable({
+            "pageLength": 10,
+            "order": [[0, "desc"]],
+            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+        });
         itemsTable = $("#items_table").DataTable({
             paging: false,
             "pageLength": 10,
@@ -122,6 +197,28 @@
             .column(0)
             .search(id, true, false)
             .draw();
+    }
+    function cancelOrder(id) {
+        var r = confirm("Are you sure you want to cancel this order?");
+        if (r == true) {
+            $.ajax({
+                type: "POST",
+                url: "/Admin/CancelOrder?Id=" + id,
+                timeout: 600000,
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (data) {
+                    if (data != null && data != false) {
+                        window.location.href = "";
+                    }
+                },
+                error: function (e) {
+                    alert("Something went wrong please try again");
+
+                }
+            });
+        }
     }
 
 </script>

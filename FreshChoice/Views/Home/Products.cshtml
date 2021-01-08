@@ -4,7 +4,10 @@
 }
 
 <div class="row">
-
+    @if(Model.Items == null || Model.Items.Count == 0)
+    {
+        <img style="width:100%" class="text-center" src="https://cdn.wpml.org/wp-content/uploads/2015/02/555113-no_items_found.png" />
+    }
 
     @foreach (var item in Model.Items)
     {
