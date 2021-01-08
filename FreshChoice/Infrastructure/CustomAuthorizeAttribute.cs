@@ -18,34 +18,39 @@ namespace CustomAuthorizationFilter.Infrastructure
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
             bool authorize = false;
-            int userId = int.Parse(Convert.ToString(httpContext.Session["UserId"]));
-            if (userId != 0)
-                using (var context = new FreshChoiceEntities())
-                {
-                    var userRole = (from u in context.Users
-                                    join r in context.Roles on u.RoleId equals r.RoleId
-                                    where u.UserId == userId
-                                    select new
-                                    {
-                                        r.RoleName
-                                    }).FirstOrDefault();
-                    foreach (var role in allowedroles)
+            try
+            {
+                int userId = int.Parse(Convert.ToString(httpContext.Session["UserId"]));
+                if (userId != 0)
+                    using (var context = new FreshChoiceEntities())
                     {
-                        if (role == userRole.RoleName) return true;
+                        var userRole = (from u in context.Users
+                                        join r in context.Roles on u.RoleId equals r.RoleId
+                                        where u.UserId == userId
+                                        select new
+                                        {
+                                            r.RoleName
+                                        }).FirstOrDefault();
+                        foreach (var role in allowedroles)
+                        {
+                            if (role == userRole.RoleName) return true;
+                        }
                     }
-                }
-
+            }
+            catch{}
 
             return authorize;
         }
 
         protected override void HandleUnauthorizedRequest(AuthorizationContext filterContext)
         {
+            
             filterContext.Result = new RedirectToRouteResult(
                new RouteValueDictionary
                {
                     { "controller", "User" },
-                    { "action", "Login" }
+                    { "action", "Login" },
+                    { "ReturnUrl", filterContext.HttpContext.Request.Url}
                });
         }
     }

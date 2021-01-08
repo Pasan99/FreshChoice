@@ -14,6 +14,7 @@ namespace FreshChoice.ViewModels.Admin
         public DateTime LastUpdate { get; set; }
         public DateTime NextDeadline { get; set; }
         public string OrderStatus { get; set; }
+        public int OrderStatusId { get; set; }
         public Models.Cart Cart { get; set; }
         public double OrderAmount { get; set; }
         public List<OrderCartItem> Items { get; set; }

@@ -1,0 +1,49 @@
+﻿@model FreshChoice.ViewModels.Home.CategoryViewModel
+@{
+    ViewBag.Title = "Categories";
+}
+
+<h2>Categories</h2>
+<hr />
+<div class="row" style="padding:10px;">
+    @foreach (var item in Model.Categories)
+    {
+        <div class="col-sm-2" style="padding:4px;">
+            <div class="card text-dark bg-light mb-3" style="max-width: 18rem;">
+                <div class="card-header"><a href="/Home/Products?CategoryId=@item.CategoryId">@item.CategoryName</a></div>
+                <div class="card-body">
+                    <h6 class="card-title">Brands</h6>
+                    @foreach (var brand in Model.Brands.Where(w => w.CategoryId == item.CategoryId).ToList())
+                    {
+                        <a class="btn btn-sm btn-outline-info btn-block" href="/Home/Products?BrandId=@brand.BrandId">@brand.BrandName</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+<br />
+<h2>Brands</h2>
+
+<div class="row" style="padding:10px;">
+    @foreach (var item in Model.Brands)
+    {
+        <div class="col-sm-2" style="padding:4px;">
+            <div class="card text-dark bg-light mb-3" style="max-width: 18rem;">
+                <div class="card-header"><a href="/Home/Products?BrandId=@item.BrandId">@item.BrandName</a></div>
+            </div>
+        </div>
+        @*<div class="col-sm-3" style="padding:4px;">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@item.BrandName</h5>
+                    <p class="card-text">This is brand descriptions</p>
+                    <a href="/Home/Products?CategoryId=@item.BrandId" class="btn btn-primary">Shop</a>
+                </div>
+            </div>
+        </div>*@
+    }
+
+</div>
+
