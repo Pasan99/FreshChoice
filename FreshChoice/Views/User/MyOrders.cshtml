@@ -12,12 +12,19 @@
         <div class="card text-white bg-dark mb-3" style="max-width: 100%">
             <div class="card-header"><h3>Address</h3></div>
             <div class="card-body">
-                <h6 class="card-title">@Model.User.UserName (@Model.User.UserEmail)</h6>
-                <hr />
-                <p class="card-text">@Model.Address.AddressDescription</p>
-                <p class="card-text"> GPS (@Model.Address.AddressLatitude, @Model.Address.AddressLongitude)</p>
-                <p class="card-text"> Phone : @Model.User.UserContact</p>
-                <a href="/User/Address/@Model.Address.AddressId" class="btn btn-block btn-primary">Change</a>
+                @if (Model.Address != null)
+                {
+                    <h6 class="card-title">@Model.User.UserName (@Model.User.UserEmail)</h6>
+                    <hr />
+                    <p class="card-text">@Model.Address.AddressDescription</p>
+                    <p class="card-text"> GPS (@Model.Address.AddressLatitude, @Model.Address.AddressLongitude)</p>
+                    <p class="card-text"> Phone : @Model.User.UserContact</p>
+                    <a href="/User/Address/@Model.Address.AddressId" class="btn btn-block btn-primary">Change</a>
+                }
+                else
+                {
+                    <a href="/User/Address" class="btn btn-block btn-primary">Add</a>
+                }
             </div>
         </div>
     </div>
@@ -26,7 +33,14 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col">
-                        <h5 class="card-title">My Wallet (@Model.Wallet.WalletDescription)</h5>
+                        @if (Model.Wallet != null)
+                        {
+                            <h5 class="card-title">My Wallet (@Model.Wallet.WalletDescription)</h5>
+                        }
+                        else
+                        {
+                            <h5 class="card-title">My Wallet is Empty</h5>
+                        }
                     </div>
                     <div class="col">
                         <p class="card-title float-right"> Wallet Owner : @Model.User.UserName</p>

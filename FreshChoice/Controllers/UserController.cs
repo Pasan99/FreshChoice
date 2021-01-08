@@ -100,7 +100,7 @@ namespace FreshChoice.Controllers
             string message = "";
             //
             // Model Validation 
-            if (ModelState.IsValid)
+            if (true)
             {
 
                 #region //Email is already Exist 
@@ -345,8 +345,12 @@ namespace FreshChoice.Controllers
             return RedirectToAction("Login", "User");
         }
 
-        public ActionResult Address(int Id)
+        public ActionResult Address(int Id = 0)
         {
+            if (Id == 0)
+            {
+                return View(new Address());
+            }
             Address address = new Address();
             using (FreshChoiceEntities db = new FreshChoiceEntities())
             {
