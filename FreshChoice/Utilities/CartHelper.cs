@@ -40,12 +40,11 @@ namespace FreshChoice.Utilities
                 {
                     return null;
                 }
-                if (currentCart != null)
+                else
                 {
                     return db.CartItems.Where(w => w.CartId == currentCart.CartId).ToList();
                 }
             }
-            return null;
         }
         public List<OrderCartItem> GetOrderCartItems()
         {
@@ -190,10 +189,10 @@ namespace FreshChoice.Utilities
                 return false;
             }
             using (FreshChoiceEntities db = new FreshChoiceEntities()) {
-                currentCart.CartIsActive = false;
                 Cart cart = db.Carts.Where(w => w.CartId == currentCart.CartId).FirstOrDefault();
                 cart.CartIsActive = false;
                 db.SaveChanges();
+                currentCart = null;
                 return true;
             }
         }
@@ -218,12 +217,14 @@ namespace FreshChoice.Utilities
                         return null;
                     }
                 }
+                // Set order status and delivery status
                 OrderStatu orderStatus = db.OrderStatus.Where(w => w.OrderStatusOrder == OrderProcessingStatus.PLACED).FirstOrDefault();
                 Delivery delivery = new Delivery();
                 delivery.DeliveryType = DeliveryType;
                 db.Deliveries.Add(delivery);
                 db.SaveChanges();
 
+                // create new order
                 Order order = new Order();
                 order.OrderDescription = "New Order";
                 order.OrderBillNo = GenerateBillNo(DeliveryType);
@@ -240,7 +241,7 @@ namespace FreshChoice.Utilities
                 {
                     total += cartItem.CartItemTotalPrice;
                 }
-                // Add delivery Fees
+                // calculate & Add delivery Fees
                 double deliveryFee = 0;
                 if (DeliveryType == DeliveryTypes.HOME_DELIVERY)
                 {
@@ -293,6 +294,7 @@ namespace FreshChoice.Utilities
         public double GetDeliveryFees()
         {
             double deliveryFee = 0;
+            // calculate delivery fees base on lat & lng
             using (FreshChoiceEntities db = new FreshChoiceEntities())
             {
                 Address address = db.Addresses.Where(w => w.UserId == currentUserId).FirstOrDefault();
@@ -310,6 +312,7 @@ namespace FreshChoice.Utilities
         public double GetDeliveryInKilometers()
         {
             double distance = 0;
+            // calculate distance based on lat & lng
             using (FreshChoiceEntities db = new FreshChoiceEntities())
             {
                 Address address = db.Addresses.Where(w => w.UserId == currentUserId).FirstOrDefault();
@@ -354,6 +357,7 @@ namespace FreshChoice.Utilities
                     orderItem.LastUpdate = order.order.OrderUpdatedDate;
                     orderItem.NextDeadline = order.order.OrderNextDeadline;
                     orderItem.OrderStatus = order.orderStatus.OrderStatusDescription;
+                    orderItem.OrderStatusId = order.orderStatus.OrderStatusId;
                     orderItem.OrderAmount = order.order.OrderAmount;
 
                     var items = db.CartItems
@@ -403,6 +407,7 @@ namespace FreshChoice.Utilities
                         wallet = new Wallet();
                         wallet.WalletDescription = currentUserId + "_wallet";
                         wallet.WalletTotal = 0;
+                        wallet.UserId = currentUserId;
                         db.Wallets.Add(wallet);
                         db.SaveChanges();
 

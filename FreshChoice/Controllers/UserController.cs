@@ -9,6 +9,7 @@ using System.Web.Security;
 using FreshChoice.Models;
 using CustomAuthorizationFilter.Infrastructure;
 using FreshChoice.Utilities;
+using FreshChoice.ViewModels.Home;
 
 namespace FreshChoice.Controllers
 {
@@ -18,19 +19,32 @@ namespace FreshChoice.Controllers
         public ActionResult MyOrders()
         {
             int userId = int.Parse(Convert.ToString(Session["UserId"]));
-            return View(CartHelper.GetInstance(userId).GetAllOrderItems());
+            MyProfileViewModel viewModel = new MyProfileViewModel();
+            using(FreshChoiceEntities db = new FreshChoiceEntities())
+            {
+                viewModel.User = db.Users.Where(w => w.UserId == userId).FirstOrDefault();
+                viewModel.Wallet = db.Wallets.Where(w => w.UserId == userId).FirstOrDefault();
+                if (viewModel.Wallet != null)
+                {
+                    viewModel.Transactions = db.Transactions.Where(w => w.WalletId == viewModel.Wallet.WalletId).ToList();
+                }
+                viewModel.Orders = CartHelper.GetInstance(userId).GetAllOrderItems();
+                viewModel.Address = db.Addresses.Where(w => w.UserId == userId).FirstOrDefault();
+                viewModel.Orders = viewModel.Orders.OrderByDescending(o => o.LastUpdate).ToList();
+            }
+            return View(viewModel);
         }
         // GET: User
         public ActionResult Registration()
         {
             return View();
         }
-        //[CustomAuthorize("Admin")]
+        [CustomAuthorize("Admin")]
         public ActionResult AdminRegistration()
         {
             return View();
         }
-        //[CustomAuthorize("Admin")]
+        [CustomAuthorize("Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult AdminRegistration([Bind(Exclude = "IsEmailVerified,ActivationCode")] User user)
@@ -331,9 +345,14 @@ namespace FreshChoice.Controllers
             return RedirectToAction("Login", "User");
         }
 
-        public ActionResult Address()
+        public ActionResult Address(int Id)
         {
-            return View();
+            Address address = new Address();
+            using (FreshChoiceEntities db = new FreshChoiceEntities())
+            {
+                address = db.Addresses.Where(w => w.AddressId == Id).FirstOrDefault();
+            }
+            return View(address);
         }
         //Login POST
         [HttpPost]
@@ -344,12 +363,19 @@ namespace FreshChoice.Controllers
             using (FreshChoiceEntities db = new FreshChoiceEntities())
             {
                 Address newAddress = new Address();
+                if (address.AddressId != 0)
+                {
+                    newAddress = db.Addresses.Where(w => w.AddressId == address.AddressId).FirstOrDefault();
+                }
                 newAddress.UserId = userId;
                 newAddress.AddressName = address.AddressName;
                 newAddress.AddressDescription = address.AddressDescription;
                 newAddress.AddressLatitude = address.AddressLatitude;
                 newAddress.AddressLongitude = address.AddressLongitude;
-                db.Addresses.Add(newAddress);
+                if (address.AddressId == 0)
+                {
+                    db.Addresses.Add(newAddress);
+                }
                 db.SaveChanges();
             }
             return Redirect("/Cart");

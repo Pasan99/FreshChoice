@@ -25,10 +25,10 @@
 
         </div>
         <div class="carousel-item">
-            <img class="d-block w-100" src="~/imgSlider/Slider2.png" alt="Second slide">
+            <img class="d-block w-100" src="https://lh3.googleusercontent.com/proxy/aG-wltGgmyQBss4Li5GxlAF92qThNBEX_wpPR0EdiFiA_kUoWVPs3P_biAJs_DbZUoxgqoPZwuooYMh0BuSlK7SLfaiBJGM" alt="Second slide">
         </div>
         <div class="carousel-item">
-            <img class="d-block w-100" src="~/imgSlider/Slider3.png" alt="Third slide">
+            <img class="d-block w-100" src="https://cdn-a.william-reed.com/var/wrbm_gb_food_pharma/storage/images/publications/cosmetics/cosmeticsdesign-europe.com/headlines/regulation-safety/counterfeit-cosmetic-products-can-be-fought-with-digital-technology-says-snapdragon/10939933-1-eng-GB/Counterfeit-cosmetic-products-can-be-fought-with-digital-technology-says-SnapDragon.jpg" alt="Third slide">
         </div>
     </div>
     <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
@@ -76,7 +76,7 @@
                     else
                     {
                         <div class="" style="text-align: center;">
-                            <input id="quantity" value="@item.InCartCount" type="number" />
+                            <input id="quantity" value="@item.InCartCount" type="number" onchange="changeQnt(this.val - @(item.InCartCount), '@item.ItemId')" />
                         </div>
                     }
                 </div>
@@ -88,10 +88,45 @@
     $(document).ready(function () {
         $("#cartItemCount").html(@Model.InCartCount);
     });
+
+    function changeQnt(val, id) {
+        console.log(val);
+        if (val > 0) {
+            addItem(id);
+        }
+        else {
+            removeItem(id);
+        }
+    }
+
     function addItem(itemId) {
         $.ajax({
             type: "POST",
             url: "/Cart/AddItem/" + itemId,
+            timeout: 600000,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function (data) {
+                console.log(data);
+                if (data != null) {
+                    console.log(data);
+                    window.location.href = "";
+                }
+                else {
+                    alert("Something went wrong please try again");
+                }
+            },
+            error: function (e) {
+                alert("Something went wrong please try again");
+
+            }
+        });
+    }
+    function removeItem(itemId) {
+        $.ajax({
+            type: "POST",
+            url: "/Cart/RemoveItem/" + itemId,
             timeout: 600000,
             processData: false,
             contentType: false,

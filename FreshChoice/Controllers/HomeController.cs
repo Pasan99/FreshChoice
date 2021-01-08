@@ -56,7 +56,7 @@ namespace FreshChoice.Controllers
             return View(viewModel);
         }
         [CustomAuthorize("User", "Admin")]
-        public ActionResult Products(int CategoryId = 0, String q = null)
+        public ActionResult Products(int CategoryId = 0, String q = null, int BrandId = 0)
         {
             int userId = int.Parse(Convert.ToString(Session["UserId"]));
             List<OrderCartItem> cartItems = CartHelper.GetInstance(userId).GetOrderCartItems();
@@ -76,6 +76,10 @@ namespace FreshChoice.Controllers
                 {
                     items = items.Where(w => w.ItemName.ToLower().StartsWith(q.ToLower())).ToList();
                 }
+                if (BrandId != 0)
+                {
+                    items = items.Where(w => w.Brand.BrandId == BrandId).ToList();
+                }
                 viewModel.Items = new List<IndexItem>();
                 foreach (var item in items)
                 {
@@ -89,6 +93,7 @@ namespace FreshChoice.Controllers
                     orderItem.ItemImageUrl = item.Images.First().ImageUrl;
                     orderItem.Quantity = item.ItemAvailableQnt;
 
+                    // Checking whether the item is in cart or not
                     if (cartItems != null && cartItems.Count > 0)
                     {
                         var existing = cartItems.Where(w => w.ItemId == orderItem.ItemId).FirstOrDefault();
@@ -101,6 +106,18 @@ namespace FreshChoice.Controllers
                     viewModel.Items.Add(orderItem);
                 }
             }
+            return View(viewModel);
+        }
+        [CustomAuthorize("User", "Admin")]
+        public ActionResult Categories()
+        {
+            CategoryViewModel viewModel = new CategoryViewModel();
+            using(FreshChoiceEntities db = new FreshChoiceEntities())
+            {
+                viewModel.Categories = db.Categories.ToList();
+                viewModel.Brands = db.Brands.ToList();
+            }
+
             return View(viewModel);
         }
         [CustomAuthorize("User", "Admin")]

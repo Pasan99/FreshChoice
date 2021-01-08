@@ -95,6 +95,10 @@ namespace FreshChoice.Controllers
                 
                 viewModel.SubTotal = total;
                 viewModel.DeliveryFee = CartHelper.GetInstance(UserId).GetDeliveryFees();
+                if (viewModel.SubTotal == 0)
+                {
+                    viewModel.DeliveryFee = 0;
+                }
                 viewModel.Total = viewModel.SubTotal + viewModel.DeliveryFee;
                 viewModel.DistanceInKiloMeters = CartHelper.GetInstance(UserId).GetDeliveryInKilometers();
                 Address address = db.Addresses.Where(w => w.UserId == UserId).FirstOrDefault();
