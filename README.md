@@ -1,4 +1,4 @@
-# FreshChoice
+# FreshChoice - Online Supermarket
 
 You are required using an appropriate approach to analyse, design, implement and test the software for the scenario described below:
 
