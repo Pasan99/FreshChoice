@@ -1,7 +1,5 @@
 # FreshChoice - Online Supermarket
 
-You are required using an appropriate approach to analyse, design, implement and test the software for the scenario described below:
-
 Scenario
 
 FreshChoice supermarket wishes to provide an online ordering, pickup and delivery facility for their customers to reduce rush within the supermarket and also to provide a convenient service. The supermarket contains variety of categories of products needed for households. There are more than 10 product categories with various items, and brands under each category which under control of different counters such as, grocery items, vegetable, meat and seafood, bakery items, dairy products, cosmetics, etc. They are taking delivery orders only within 4 km from their supermarket. The customers can also visit the supermarket and pick up the order once it is ready. When the order is made, the system will estimate and notify the approximate time needed to ready the order. The customers can be Registered customers and the Non-registered customers. All the online orders are to be payed online. Non-registered customers have to register before they make their order.
